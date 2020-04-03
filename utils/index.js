@@ -2,9 +2,7 @@
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 exports.registerLinkResolver = registerLinkResolver;
 exports.getCookies = getCookies;
 exports.getDocumentIndexFromCursor = getDocumentIndexFromCursor;

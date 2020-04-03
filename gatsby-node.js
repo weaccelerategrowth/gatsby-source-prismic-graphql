@@ -14,9 +14,13 @@ var _objectSpread2 = _interopRequireDefault(require("@babel/runtime/helpers/obje
 
 var _path = _interopRequireDefault(require("path"));
 
-var _getRootQuery = require("gatsby-source-graphql-universal/getRootQuery");
+var _fs = _interopRequireDefault(require("fs"));
 
-var _gatsbyNode = require("gatsby-source-graphql-universal/gatsby-node");
+var _get = _interopRequireDefault(require("lodash/get"));
+
+var _babelParseToAst = require("gatsby/dist/utils/babel-parse-to-ast");
+
+var _gatsbyNode = require("gatsby-source-graphql/gatsby-node");
 
 var _utils = require("./utils");
 
@@ -26,7 +30,68 @@ var _pathToRegexp = _interopRequireDefault(require("path-to-regexp"));
 
 var _querystring = _interopRequireDefault(require("querystring"));
 
-exports.onCreateWebpackConfig = _gatsbyNode.onCreateWebpackConfig;
+exports.onCreateWebpackConfig = function (_ref) {
+  var stage = _ref.stage,
+      actions = _ref.actions,
+      getConfig = _ref.getConfig;
+  var config = getConfig();
+
+  if (stage.indexOf('html') >= 0) {
+    return;
+  }
+
+  var replaceRule = function replaceRule(ruleUse) {
+    if (ruleUse.loader && ruleUse.loader.indexOf("gatsby/dist/utils/babel-loader.js") >= 0) {
+      ruleUse.loader = require.resolve("./babel-loader.js");
+    }
+  };
+
+  var traverseRule = function traverseRule(rule) {
+    if (rule.oneOf && Array.isArray(rule.oneOf)) {
+      rule.oneOf.forEach(traverseRule);
+    }
+
+    if (rule.use) {
+      if (Array.isArray(rule.use)) {
+        rule.use.forEach(replaceRule);
+      } else {
+        replaceRule(rule.use);
+      }
+    }
+  };
+
+  config.module.rules.forEach(traverseRule);
+  actions.replaceWebpackConfig(config);
+};
+
+function getRootQuery(componentPath) {
+  try {
+    var content = _fs.default.readFileSync(componentPath, 'utf-8');
+
+    var ast = (0, _babelParseToAst.babelParseToAst)(content, componentPath);
+    var exported = (0, _get.default)(ast, 'program.body', []).filter(function (n) {
+      return n.type === 'ExportNamedDeclaration';
+    });
+    var exportedQuery = exported.find(function (exp) {
+      return (0, _get.default)(exp, 'declaration.declarations.0.id.name') === 'query';
+    });
+
+    if (exportedQuery) {
+      var query = (0, _get.default)(exportedQuery, 'declaration.declarations.0.init.quasi.quasis.0.value.raw');
+
+      if (query) {
+        return query;
+      }
+    }
+  } catch (err) {
+    console.error('gatsby-source-prismic-universal: Could not parse component path: ', componentPath);
+    console.error(err);
+  }
+
+  return null;
+}
+
+;
 var accessToken;
 
 exports.onPreInit = function (_, options) {
@@ -37,10 +102,10 @@ exports.onPreInit = function (_, options) {
   }
 };
 
-exports.onCreatePage = function (_ref) {
-  var page = _ref.page,
-      actions = _ref.actions;
-  var rootQuery = (0, _getRootQuery.getRootQuery)(page.componentPath);
+exports.onCreatePage = function (_ref2) {
+  var page = _ref2.page,
+      actions = _ref2.actions;
+  var rootQuery = getRootQuery(page.componentPath);
   page.context = page.context || {};
 
   if (rootQuery) {
@@ -77,7 +142,7 @@ function createGeneralPreviewPage(createPage, options) {
 }
 
 function createDocumentPreviewPage(createPage, page, lang) {
-  var rootQuery = (0, _getRootQuery.getRootQuery)(page.component);
+  var rootQuery = getRootQuery(page.component);
   createPage({
     path: page.path,
     matchPath: process.env.NODE_ENV === 'production' ? undefined : page.match,
@@ -108,9 +173,9 @@ function createDocumentPreviewPage(createPage, page, lang) {
  */
 
 
-function createDocumentPath(pageOptions, node, _ref2) {
-  var defaultLang = _ref2.defaultLang,
-      shortenUrlLangs = _ref2.shortenUrlLangs;
+function createDocumentPath(pageOptions, node, _ref3) {
+  var defaultLang = _ref3.defaultLang,
+      shortenUrlLangs = _ref3.shortenUrlLangs;
   var pathKeys = [];
   var pathTemplate = pageOptions.match || pageOptions.path;
   (0, _pathToRegexp.default)(pathTemplate, pathKeys);
@@ -135,9 +200,9 @@ function createDocumentPath(pageOptions, node, _ref2) {
 
 function createDocumentPages(createPage, edges, options, page) {
   // Cycle through each document returned from query...
-  edges.forEach(function (_ref3, index) {
-    var cursor = _ref3.cursor,
-        node = _ref3.node;
+  edges.forEach(function (_ref4, index) {
+    var cursor = _ref4.cursor,
+        node = _ref4.node;
     var previousNode = edges[index - 1] && edges[index - 1].node;
     var nextNode = edges[index + 1] && edges[index + 1].node; // ...and create the page
 
@@ -145,7 +210,7 @@ function createDocumentPages(createPage, edges, options, page) {
       path: createDocumentPath(page, node, options),
       component: page.component,
       context: (0, _objectSpread2.default)({
-        rootQuery: (0, _getRootQuery.getRootQuery)(page.component)
+        rootQuery: getRootQuery(page.component)
       }, node._meta, {
         cursor: cursor,
         paginationPreviousMeta: previousNode ? previousNode._meta : null,
@@ -161,15 +226,15 @@ function createDocumentPages(createPage, edges, options, page) {
   });
 }
 
-var getDocumentsQuery = function getDocumentsQuery(_ref4) {
-  var documentType = _ref4.documentType,
-      sortType = _ref4.sortType,
-      extraPageFields = _ref4.extraPageFields;
+var getDocumentsQuery = function getDocumentsQuery(_ref5) {
+  var documentType = _ref5.documentType,
+      sortType = _ref5.sortType,
+      extraPageFields = _ref5.extraPageFields;
   return "\n  query AllPagesQuery ($after: String, $lang: String, $sortBy: ".concat(sortType, ") {\n    prismic {\n      ").concat(documentType, " (\n        first: 20\n        after: $after\n        sortBy: $sortBy\n        lang: $lang\n      ) {\n        totalCount\n        pageInfo {\n          hasNextPage\n          endCursor\n        }\n        edges {\n          cursor\n          node {\n            ").concat(extraPageFields, "\n            _meta {\n              id\n              lang\n              uid\n              type\n              alternateLanguages {\n                id\n                lang\n                type\n                uid\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n");
 };
 
 exports.createPages = /*#__PURE__*/function () {
-  var _ref6 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2(_ref5, options) {
+  var _ref7 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2(_ref6, options) {
     var graphql, createPage, createPagesForType, _createPagesForType, pages, pageCreators;
 
     return _regenerator.default.wrap(function _callee2$(_context2) {
@@ -267,7 +332,7 @@ exports.createPages = /*#__PURE__*/function () {
               return _createPagesForType.apply(this, arguments);
             };
 
-            graphql = _ref5.graphql, createPage = _ref5.actions.createPage;
+            graphql = _ref6.graphql, createPage = _ref6.actions.createPage;
             createGeneralPreviewPage(createPage, options);
             /**
              * Helper that recursively queries GraphQL to collect all documents for the given
@@ -303,19 +368,19 @@ exports.createPages = /*#__PURE__*/function () {
   }));
 
   return function (_x, _x2) {
-    return _ref6.apply(this, arguments);
+    return _ref7.apply(this, arguments);
   };
 }();
 
-exports.createResolvers = function (_ref7, _ref8) {
-  var actions = _ref7.actions,
-      cache = _ref7.cache,
-      createNodeId = _ref7.createNodeId,
-      createResolvers = _ref7.createResolvers,
-      store = _ref7.store,
-      reporter = _ref7.reporter;
-  var _ref8$sharpKeys = _ref8.sharpKeys,
-      sharpKeys = _ref8$sharpKeys === void 0 ? [/image|photo|picture/] : _ref8$sharpKeys;
+exports.createResolvers = function (_ref8, _ref9) {
+  var actions = _ref8.actions,
+      cache = _ref8.cache,
+      createNodeId = _ref8.createNodeId,
+      createResolvers = _ref8.createResolvers,
+      store = _ref8.store,
+      reporter = _ref8.reporter;
+  var _ref9$sharpKeys = _ref9.sharpKeys,
+      sharpKeys = _ref9$sharpKeys === void 0 ? [/image|photo|picture/] : _ref9$sharpKeys;
   var createNode = actions.createNode;
   var state = store.getState();
 

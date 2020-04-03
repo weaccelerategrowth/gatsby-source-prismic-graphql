@@ -1,8 +1,6 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 exports.getIntrospectionQueryResultData = void 0;
 
 var getIntrospectionQueryResultData = function getIntrospectionQueryResultData(_ref) {

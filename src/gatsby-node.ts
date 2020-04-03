@@ -1,13 +1,71 @@
 import path from 'path';
-import { getRootQuery } from 'gatsby-source-graphql-universal/getRootQuery';
-import { onCreateWebpackConfig, sourceNodes } from 'gatsby-source-graphql-universal/gatsby-node';
+import fs from 'fs';
+import get from 'lodash/get';
+import { babelParseToAst } from 'gatsby/dist/utils/babel-parse-to-ast';
+import { sourceNodes } from 'gatsby-source-graphql/gatsby-node';
 import { fieldName, PrismicLink, typeName } from './utils';
 import { Page, PluginOptions } from './interfaces/PluginOptions';
 import { createRemoteFileNode } from 'gatsby-source-filesystem';
 import pathToRegexp from 'path-to-regexp';
 import querystring from 'querystring';
 
-exports.onCreateWebpackConfig = onCreateWebpackConfig;
+exports.onCreateWebpackConfig = ({ stage, actions, getConfig }: any) => {
+  const config = getConfig()
+
+  if (stage.indexOf('html') >= 0) {
+    return;
+  }
+
+  const replaceRule = (ruleUse: any) => {
+    if (ruleUse.loader && ruleUse.loader.indexOf(`gatsby/dist/utils/babel-loader.js`) >= 0) {
+      ruleUse.loader = require.resolve(`./babel-loader.js`);
+    }
+  }
+
+  const traverseRule = (rule: any) => {
+    if (rule.oneOf && Array.isArray(rule.oneOf)) {
+      rule.oneOf.forEach(traverseRule);
+    }
+
+    if (rule.use) {
+      if (Array.isArray(rule.use)) {
+        rule.use.forEach(replaceRule);
+      } else {
+        replaceRule(rule.use);
+      }
+    }
+
+  };
+
+  config.module.rules.forEach(traverseRule)
+
+  actions.replaceWebpackConfig(config)
+};
+
+function getRootQuery(componentPath: string) {
+  try {
+    const content = fs.readFileSync(componentPath, 'utf-8');
+    const ast = babelParseToAst(content, componentPath);
+    const exported = get(ast, 'program.body', []).filter(
+      (n: any) => n.type === 'ExportNamedDeclaration'
+    );
+    const exportedQuery = exported.find((exp: any) =>
+      get(exp, 'declaration.declarations.0.id.name') === 'query'
+    );
+
+    if (exportedQuery) {
+      const query = get(exportedQuery, 'declaration.declarations.0.init.quasi.quasis.0.value.raw');
+
+      if (query) {
+        return query;
+      }
+    }
+  } catch (err) {
+    console.error('gatsby-source-prismic-universal: Could not parse component path: ', componentPath);
+    console.error(err);
+  }
+  return null;
+};
 
 let accessToken: string | null | undefined;
 exports.onPreInit = (_: any, options: PluginOptions) => {

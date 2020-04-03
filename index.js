@@ -2,80 +2,28 @@
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-Object.defineProperty(exports, "PreviewPage", {
-  enumerable: true,
-  get: function get() {
-    return _PreviewPage.default;
-  }
-});
-Object.defineProperty(exports, "WrapPage", {
-  enumerable: true,
-  get: function get() {
-    return _WrapPage.WrapPage;
-  }
-});
-Object.defineProperty(exports, "withPreview", {
-  enumerable: true,
-  get: function get() {
-    return _withPreview.withPreview;
-  }
-});
-Object.defineProperty(exports, "PrismicLink", {
-  enumerable: true,
-  get: function get() {
-    return _utils.PrismicLink;
-  }
-});
-Object.defineProperty(exports, "getCookies", {
-  enumerable: true,
-  get: function get() {
-    return _utils.getCookies;
-  }
-});
-Object.defineProperty(exports, "getCursorFromDocumentIndex", {
-  enumerable: true,
-  get: function get() {
-    return _utils.getCursorFromDocumentIndex;
-  }
-});
-Object.defineProperty(exports, "getDocumentIndexFromCursor", {
-  enumerable: true,
-  get: function get() {
-    return _utils.getDocumentIndexFromCursor;
-  }
-});
-Object.defineProperty(exports, "registerLinkResolver", {
-  enumerable: true,
-  get: function get() {
-    return _utils.registerLinkResolver;
-  }
-});
-Object.defineProperty(exports, "linkResolver", {
-  enumerable: true,
-  get: function get() {
-    return _utils.linkResolver;
-  }
-});
-Object.defineProperty(exports, "fieldName", {
-  enumerable: true,
-  get: function get() {
-    return _utils.fieldName;
-  }
-});
-Object.defineProperty(exports, "typeName", {
-  enumerable: true,
-  get: function get() {
-    return _utils.typeName;
-  }
-});
+exports.__esModule = true;
+exports.typeName = exports.fieldName = exports.linkResolver = exports.registerLinkResolver = exports.getDocumentIndexFromCursor = exports.getCursorFromDocumentIndex = exports.getCookies = exports.PrismicLink = exports.withPreview = exports.WrapPage = exports.PreviewPage = void 0;
 
 var _PreviewPage = _interopRequireDefault(require("./components/PreviewPage"));
 
+exports.PreviewPage = _PreviewPage.default;
+
 var _WrapPage = require("./components/WrapPage");
+
+exports.WrapPage = _WrapPage.WrapPage;
 
 var _withPreview = require("./components/withPreview");
 
+exports.withPreview = _withPreview.withPreview;
+
 var _utils = require("./utils");
+
+exports.PrismicLink = _utils.PrismicLink;
+exports.getCookies = _utils.getCookies;
+exports.getCursorFromDocumentIndex = _utils.getCursorFromDocumentIndex;
+exports.getDocumentIndexFromCursor = _utils.getDocumentIndexFromCursor;
+exports.registerLinkResolver = _utils.registerLinkResolver;
+exports.linkResolver = _utils.linkResolver;
+exports.fieldName = _utils.fieldName;
+exports.typeName = _utils.typeName;

@@ -2,9 +2,7 @@
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 exports.withPreview = void 0;
 
 var _react = _interopRequireDefault(require("react"));
@@ -31,13 +29,13 @@ var withPreview = function withPreview(render, query) {
     return fragment && fragment.source ? fragment.source : '';
   }).join(' '));
   return function (data) {
-    return _react.default.createElement(_WrapPage.WrapPage, {
+    return /*#__PURE__*/_react.default.createElement(_WrapPage.WrapPage, {
       data: data,
       pageContext: {
         rootQuery: rootQuery
       },
       options: window.prismicGatsbyOptions || {}
-    }, _react.default.createElement(RenderComponent, null));
+    }, /*#__PURE__*/_react.default.createElement(RenderComponent, null));
   };
 };
 

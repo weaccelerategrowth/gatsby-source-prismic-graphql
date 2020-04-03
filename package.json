@@ -22,10 +22,11 @@
     "utils"
   ],
   "scripts": {
-    "build": "tsc --emitDeclarationOnly && babel src --out-dir ./ --extensions '.ts,.tsx'",
+    "watch": "tsc -w --emitDeclarationOnly",
+    "build": "tsc --emitDeclarationOnly && babel src --out-dir ./ --extensions '.js,.ts,.tsx'",
     "clean": "rimraf {interfaces,types,components,utils,*.js}",
     "prepare": "npm run clean && cross-env NODE_ENV=production npm run build",
-    "start": "babel src --out-dir ./ --extensions '.ts,.tsx' --watch"
+    "start": "babel src --out-dir ./ --extensions '.js,.ts,.tsx' --watch"
   },
   "types": "./types/index.d.ts",
   "dependencies": {
@@ -34,7 +35,7 @@
     "gatsby-image": "^2.2.4",
     "gatsby-source-filesystem": "^2.1.2",
     "gatsby-source-graphql": "^2.1.32",
-    "gatsby-source-graphql-universal": "^3.1.6",
+    "lodash.clonedeep": "^4.5.0",
     "path-to-regexp": "^3.0.0",
     "prismic-javascript": "^2.1.1",
     "traverse": "^0.6.6",
@@ -60,6 +61,7 @@
     "@types/react": "16.8.4",
     "@types/styled-components": "^4.1.12",
     "@types/traverse": "^0.6.32",
+    "babel-preset-gatsby-package": "^0.3.1",
     "cross-env": "^5.2.0",
     "gatsby": "^2.13.37",
     "prettier": "^1.16.4"

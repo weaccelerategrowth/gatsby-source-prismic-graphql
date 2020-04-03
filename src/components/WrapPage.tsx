@@ -1,4 +1,5 @@
-import { getIsolatedQuery } from 'gatsby-source-graphql-universal';
+import cloneDeep from 'lodash/clonedeep';
+import gql from 'graphql-tag';
 import pick from 'lodash/pick';
 import get from 'lodash/get';
 import pathToRegexp from 'path-to-regexp';
@@ -154,4 +155,44 @@ export class WrapPage extends React.PureComponent<any, WrapPageState> {
       data: this.state.data,
     });
   }
+}
+
+function getQuery(query: any) {
+  if (typeof query === 'object' && query.definitions) {
+    return query;
+  } else if (typeof query === 'string') {
+    return gql(query);
+  } else if (typeof query === 'object' && query.source) {
+    return gql(query.source);
+  } else {
+    throw new Error('Could not parse query: ' + query);
+  }
+}
+
+function getIsolatedQuery(querySource: string, fieldName: string, typeName: string) {
+
+  const query = getQuery(querySource);
+  const updatedQuery = cloneDeep(query);
+
+  const updatedRoot = updatedQuery.definitions[0].selectionSet.selections
+  .find((selection: any) => selection.name && selection.name.kind === 'Name' && selection.name.value === fieldName);
+
+  if (updatedRoot) {
+    updatedQuery.definitions[0].selectionSet.selections = updatedRoot.selectionSet.selections;
+  } else if (fieldName) {
+    console.warn('Failed to update query root');
+    return;
+  }
+
+  traverse(updatedQuery).forEach(function (x) {
+    if (this.isLeaf && this.parent && this.parent.key === 'name') {
+      if (this.parent.parent && this.parent.parent.node.kind === 'NamedType') {
+        if (typeof x === 'string' && x.indexOf(`${typeName}_`) === 0) {
+          this.update(x.substr(typeName.length + 1));
+        }
+      }
+    }
+  });
+
+  return updatedQuery;
 }

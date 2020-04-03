@@ -6,7 +6,7 @@ var _react = _interopRequireDefault(require("react"));
 
 exports.onRenderBody = function (_ref, options) {
   var setHeadComponents = _ref.setHeadComponents;
-  var components = [_react.default.createElement("script", {
+  var components = [/*#__PURE__*/_react.default.createElement("script", {
     key: "prismic-config",
     dangerouslySetInnerHTML: {
       __html: "\n            window.prismic = {\n              endpoint: 'https://".concat(options.repositoryName, ".prismic.io/api/v2',\n            };\n            window.prismicGatsbyOptions = ").concat(JSON.stringify(options), ";\n          ")
@@ -14,7 +14,7 @@ exports.onRenderBody = function (_ref, options) {
   })];
 
   if (options.omitPrismicScript !== true) {
-    components.push(_react.default.createElement("script", {
+    components.push( /*#__PURE__*/_react.default.createElement("script", {
       key: "prismic-script",
       type: "text/javascript",
       src: "//static.cdn.prismic.io/prismic.min.js"

@@ -2,9 +2,7 @@
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 exports.WrapPage = void 0;
 
 var _objectSpread2 = _interopRequireDefault(require("@babel/runtime/helpers/objectSpread"));
@@ -29,7 +27,9 @@ var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/de
 
 var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
 
-var _gatsbySourceGraphqlUniversal = require("gatsby-source-graphql-universal");
+var _clonedeep = _interopRequireDefault(require("lodash/clonedeep"));
+
+var _graphqlTag = _interopRequireDefault(require("graphql-tag"));
 
 var _pick = _interopRequireDefault(require("lodash/pick"));
 
@@ -117,7 +117,7 @@ var WrapPage = /*#__PURE__*/function (_React$PureComponent) {
       variables = (0, _objectSpread2.default)({}, (0, _pick.default)(_this.params, keys), variables);
       return (0, _getApolloClient.getApolloClient)(_this.props.options).then(function (client) {
         return client.query((0, _objectSpread2.default)({
-          query: stripSharp((0, _gatsbySourceGraphqlUniversal.getIsolatedQuery)(query, _utils.fieldName, _utils.typeName)),
+          query: stripSharp(getIsolatedQuery(query, _utils.fieldName, _utils.typeName)),
           fetchPolicy: 'network-only',
           variables: variables
         }, rest));
@@ -226,3 +226,41 @@ var WrapPage = /*#__PURE__*/function (_React$PureComponent) {
 }(_react.default.PureComponent);
 
 exports.WrapPage = WrapPage;
+
+function getQuery(query) {
+  if ((0, _typeof2.default)(query) === 'object' && query.definitions) {
+    return query;
+  } else if (typeof query === 'string') {
+    return (0, _graphqlTag.default)(query);
+  } else if ((0, _typeof2.default)(query) === 'object' && query.source) {
+    return (0, _graphqlTag.default)(query.source);
+  } else {
+    throw new Error('Could not parse query: ' + query);
+  }
+}
+
+function getIsolatedQuery(querySource, fieldName, typeName) {
+  var query = getQuery(querySource);
+  var updatedQuery = (0, _clonedeep.default)(query);
+  var updatedRoot = updatedQuery.definitions[0].selectionSet.selections.find(function (selection) {
+    return selection.name && selection.name.kind === 'Name' && selection.name.value === fieldName;
+  });
+
+  if (updatedRoot) {
+    updatedQuery.definitions[0].selectionSet.selections = updatedRoot.selectionSet.selections;
+  } else if (fieldName) {
+    console.warn('Failed to update query root');
+    return;
+  }
+
+  (0, _traverse.default)(updatedQuery).forEach(function (x) {
+    if (this.isLeaf && this.parent && this.parent.key === 'name') {
+      if (this.parent.parent && this.parent.parent.node.kind === 'NamedType') {
+        if (typeof x === 'string' && x.indexOf("".concat(typeName, "_")) === 0) {
+          this.update(x.substr(typeName.length + 1));
+        }
+      }
+    }
+  });
+  return updatedQuery;
+}
