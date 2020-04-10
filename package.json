@@ -26,7 +26,8 @@
     "build": "tsc --emitDeclarationOnly && babel src --out-dir ./ --extensions '.js,.ts,.tsx'",
     "clean": "rimraf {interfaces,types,components,utils,*.js}",
     "prepare": "npm run clean && cross-env NODE_ENV=production npm run build",
-    "start": "babel src --out-dir ./ --extensions '.js,.ts,.tsx' --watch"
+    "start": "babel src --out-dir ./ --extensions '.js,.ts,.tsx' --watch",
+    "test": "jest"
   },
   "types": "./types/index.d.ts",
   "dependencies": {
@@ -64,7 +65,9 @@
     "babel-preset-gatsby-package": "^0.3.1",
     "cross-env": "^5.2.0",
     "gatsby": "^2.13.37",
-    "prettier": "^1.16.4"
+    "jest": "^25.3.0",
+    "prettier": "^1.16.4",
+    "typescript": "^3.8.3"
   },
   "keywords": [
     "gatsby",
