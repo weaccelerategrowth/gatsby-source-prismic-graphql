@@ -19,7 +19,8 @@
     "components",
     "interfaces",
     "types",
-    "utils"
+    "utils",
+    "babel-plugin-remove-graphql-queries"
   ],
   "scripts": {
     "watch": "tsc -w --emitDeclarationOnly",
