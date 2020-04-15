@@ -13,7 +13,7 @@ const prepareOptions = (babel, options = {}, resolve = require.resolve) => {
     items[3].splice(
       0,
       1,
-      babel.createConfigItem([require.resolve('./babel-plugin-remove-graphql-queries.js')], {
+      babel.createConfigItem([require.resolve('./babel-plugin-remove-graphql-queries')], {
         type: 'plugin',
       })
     )
