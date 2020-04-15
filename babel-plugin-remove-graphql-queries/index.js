@@ -8,7 +8,7 @@ exports.GraphQLSyntaxError = exports.EmptyGraphQLTagError = exports.StringInterp
 /*  eslint-disable new-cap */
 const graphql = require(`gatsby/graphql`);
 
-const murmurhash = require(`babel-plugin-remove-graphql-queries/murmur`);
+const murmurhash = require(`./murmur`);
 
 const nodePath = require(`path`);
 
@@ -17,7 +17,8 @@ const isGlobalIdentifier = tag => tag.isIdentifier({
 }) && tag.scope.hasGlobal(`graphql`);
 
 function getGraphqlExpr(t, queryHash, source) {
-  return t.objectExpression([t.objectProperty(t.identifier('id'), t.stringLiteral(queryHash)), t.objectProperty(t.identifier('source'), t.stringLiteral(source)), t.objectMethod('method', t.identifier('toString'), [], t.blockStatement([t.returnStatement(t.memberExpression(t.identifier('this'), t.identifier('id')))]))]);
+  return t.objectExpression([t.objectProperty(t.identifier('id'), t.stringLiteral(queryHash)), // t.objectProperty(t.identifier(`staticQueryData`), t.identifier(`data`)),
+  t.objectProperty(t.identifier('source'), t.stringLiteral(source)), t.objectMethod('method', t.identifier('toString'), [], t.blockStatement([t.returnStatement(t.memberExpression(t.identifier('this'), t.identifier('id')))]))]);
 }
 
 class StringInterpolationNotAllowedError extends Error {
@@ -212,7 +213,8 @@ function _default({
               } // Add query
 
 
-              path2.replaceWith(getGraphqlExpr(t, this.queryHash, this.query)); // Add import
+              path2.replaceWith( // getGraphqlExpr(t, this.queryHash, this.query)
+              t.objectProperty(t.identifier(`staticQueryData`), t.identifier(`data`))); // Add import
 
               const importDefaultSpecifier = t.importDefaultSpecifier(identifier);
               const importDeclaration = t.importDeclaration([importDefaultSpecifier], t.stringLiteral(filename ? nodePath.relative(nodePath.parse(filename).dir, resultPath) : shortResultPath));
