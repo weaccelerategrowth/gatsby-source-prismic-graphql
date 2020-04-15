@@ -25,7 +25,7 @@ var prepareOptions = function prepareOptions(babel) {
   var items = poHelper(babel, options, resolve);
 
   if (items.length > 2) {
-    items[3].splice(0, 1, babel.createConfigItem([require.resolve('./babel-plugin-remove-graphql-queries.js')], {
+    items[3].splice(0, 1, babel.createConfigItem([require.resolve('./babel-plugin-remove-graphql-queries')], {
       type: 'plugin'
     }));
   }
