@@ -1,20 +1,20 @@
 "use strict";
 
-const babel = require(`@babel/core`);
+var babel = require("@babel/core");
 
-const plugin = require(`../`);
+var plugin = require("../");
 
 function matchesSnapshot(query) {
-  const {
-    code
-  } = babel.transform(query, {
-    presets: [`@babel/preset-react`],
+  var _babel$transform = babel.transform(query, {
+    presets: ["@babel/preset-react"],
     plugins: [plugin]
-  });
+  }),
+      code = _babel$transform.code;
+
   expect(code).toMatchSnapshot();
 }
 
-it.todo(`Works correctly with the kitchen sink` // , () => {
+it.todo("Works correctly with the kitchen sink" // , () => {
 //   matchesSnapshot(`
 //   import * as React from 'react'
 //   import { graphql, useStaticQuery, StaticQuery } from 'gatsby'
@@ -36,372 +36,72 @@ it.todo(`Works correctly with the kitchen sink` // , () => {
 //   `)
 // }
 );
-it(`Transforms queries in useStaticQuery`, () => {
-  matchesSnapshot(`
-  import * as React from 'react'
-  import { graphql, useStaticQuery } from 'gatsby'
-
-  export default () => {
-    const siteTitle = useStaticQuery(graphql\`{site { siteMetadata { title }}}\`)
-
-    return (
-      <h1>{siteTitle.site.siteMetadata.title}</h1>
-    )
-  }
-  `);
+it("Transforms queries in useStaticQuery", function () {
+  matchesSnapshot("\n  import * as React from 'react'\n  import { graphql, useStaticQuery } from 'gatsby'\n\n  export default () => {\n    const siteTitle = useStaticQuery(graphql`{site { siteMetadata { title }}}`)\n\n    return (\n      <h1>{siteTitle.site.siteMetadata.title}</h1>\n    )\n  }\n  ");
 });
-it(`Transforms exported queries in useStaticQuery`, () => {
-  matchesSnapshot(`
-  import * as React from 'react'
-  import { graphql, useStaticQuery } from 'gatsby'
-
-  export default () => {
-    const data = useStaticQuery(query)
-
-    return (
-      <>
-        <h1>{data.site.siteMetadata.title}</h1>
-        <p>{data.site.siteMetadata.description}</p>
-      </>
-    )
-  }
-
-  export const query = graphql\`{site { siteMetadata { title }}}\`
-  `);
+it("Transforms exported queries in useStaticQuery", function () {
+  matchesSnapshot("\n  import * as React from 'react'\n  import { graphql, useStaticQuery } from 'gatsby'\n\n  export default () => {\n    const data = useStaticQuery(query)\n\n    return (\n      <>\n        <h1>{data.site.siteMetadata.title}</h1>\n        <p>{data.site.siteMetadata.description}</p>\n      </>\n    )\n  }\n\n  export const query = graphql`{site { siteMetadata { title }}}`\n  ");
 });
-it(`Transforms queries defined in own variable in useStaticQuery`, () => {
-  matchesSnapshot(`
-  import * as React from 'react'
-  import { graphql, useStaticQuery } from 'gatsby'
-
-  export default () => {
-    const query = graphql\`{site { siteMetadata { title }}}\`
-    const siteTitle = useStaticQuery(query)
-
-    return (
-      <h1>{siteTitle.site.siteMetadata.title}</h1>
-    )
-  }
-  `);
+it("Transforms queries defined in own variable in useStaticQuery", function () {
+  matchesSnapshot("\n  import * as React from 'react'\n  import { graphql, useStaticQuery } from 'gatsby'\n\n  export default () => {\n    const query = graphql`{site { siteMetadata { title }}}`\n    const siteTitle = useStaticQuery(query)\n\n    return (\n      <h1>{siteTitle.site.siteMetadata.title}</h1>\n    )\n  }\n  ");
 });
-it(`Transforms queries and preserves destructuring in useStaticQuery`, () => {
-  matchesSnapshot(`
-  import * as React from 'react'
-  import { graphql, useStaticQuery } from 'gatsby'
-
-  export default () => {
-    const query = graphql\`{site { siteMetadata { title }}}\`
-    const { site } = useStaticQuery(query)
-
-    return (
-      <h1>{site.siteMetadata.title}</h1>
-    )
-  }
-  `);
+it("Transforms queries and preserves destructuring in useStaticQuery", function () {
+  matchesSnapshot("\n  import * as React from 'react'\n  import { graphql, useStaticQuery } from 'gatsby'\n\n  export default () => {\n    const query = graphql`{site { siteMetadata { title }}}`\n    const { site } = useStaticQuery(query)\n\n    return (\n      <h1>{site.siteMetadata.title}</h1>\n    )\n  }\n  ");
 });
-it(`Transforms queries and preserves variable type in useStaticQuery`, () => {
-  matchesSnapshot(`
-  import * as React from 'react'
-  import { graphql, useStaticQuery } from 'gatsby'
-
-  export default () => {
-    const query = graphql\`{site { siteMetadata { title }}}\`
-    let { site } = useStaticQuery(query)
-
-    return (
-      <h1>{site.siteMetadata.title}</h1>
-    )
-  }
-  `);
+it("Transforms queries and preserves variable type in useStaticQuery", function () {
+  matchesSnapshot("\n  import * as React from 'react'\n  import { graphql, useStaticQuery } from 'gatsby'\n\n  export default () => {\n    const query = graphql`{site { siteMetadata { title }}}`\n    let { site } = useStaticQuery(query)\n\n    return (\n      <h1>{site.siteMetadata.title}</h1>\n    )\n  }\n  ");
 });
-it(`Transformation does not break custom hooks`, () => {
-  matchesSnapshot(`
-  import React from "react"
-  import { graphql, useStaticQuery } from "gatsby"
-
-  const useSiteMetadata = () => {
-    const data = useStaticQuery(graphql\`{site { siteMetadata { title }}}\`)
-    return data.site.siteMetadata
-  }
-
-  export default () => {
-    const siteMetadata = useSiteMetadata()
-
-    return <h1>{site.siteMetadata.title}</h1>
-  }
-
-  `);
+it("Transformation does not break custom hooks", function () {
+  matchesSnapshot("\n  import React from \"react\"\n  import { graphql, useStaticQuery } from \"gatsby\"\n\n  const useSiteMetadata = () => {\n    const data = useStaticQuery(graphql`{site { siteMetadata { title }}}`)\n    return data.site.siteMetadata\n  }\n\n  export default () => {\n    const siteMetadata = useSiteMetadata()\n\n    return <h1>{site.siteMetadata.title}</h1>\n  }\n\n  ");
 });
-it(`Transforms only the call expression in useStaticQuery`, () => {
-  matchesSnapshot(`
-  import React from "react"
-  import { graphql, useStaticQuery } from "gatsby"
-
-  const useSiteMetadata = () => {
-    return useStaticQuery(
-      graphql\`{site { siteMetadata { title }}}\`
-    ).site.siteMetadata
-  }
-
-  export default () => {
-    const siteMetadata = useSiteMetadata()
-
-    return <h1>{siteMetadata.title}</h1>
-  }
-  `);
+it("Transforms only the call expression in useStaticQuery", function () {
+  matchesSnapshot("\n  import React from \"react\"\n  import { graphql, useStaticQuery } from \"gatsby\"\n\n  const useSiteMetadata = () => {\n    return useStaticQuery(\n      graphql`{site { siteMetadata { title }}}`\n    ).site.siteMetadata\n  }\n\n  export default () => {\n    const siteMetadata = useSiteMetadata()\n\n    return <h1>{siteMetadata.title}</h1>\n  }\n  ");
 });
-it(`Only runs transforms if useStaticQuery is imported from gatsby`, () => {
-  matchesSnapshot(`
-  import * as React from 'react'
-  import { graphql } from 'gatsby'
-
-  export default () => {
-    const query = graphql\`{site { siteMetadata { title }}}\`
-    const siteTitle = useStaticQuery(query)
-
-    return (
-      <h1>{siteTitle.site.siteMetadata.title}</h1>
-    )
-  }
-  `);
+it("Only runs transforms if useStaticQuery is imported from gatsby", function () {
+  matchesSnapshot("\n  import * as React from 'react'\n  import { graphql } from 'gatsby'\n\n  export default () => {\n    const query = graphql`{site { siteMetadata { title }}}`\n    const siteTitle = useStaticQuery(query)\n\n    return (\n      <h1>{siteTitle.site.siteMetadata.title}</h1>\n    )\n  }\n  ");
 });
-it(`Allow alternative import of useStaticQuery`, () => {
-  matchesSnapshot(`
-  import * as React from 'react'
-  import * as Gatsby from 'gatsby'
-
-  export default () => {
-    const query = Gatsby.graphql\`{site { siteMetadata { title }}}\`
-    const siteTitle = Gatsby.useStaticQuery(query)
-
-    return (
-      <h1>{siteTitle.site.siteMetadata.title}</h1>
-    )
-  }
-  `);
+it("Allow alternative import of useStaticQuery", function () {
+  matchesSnapshot("\n  import * as React from 'react'\n  import * as Gatsby from 'gatsby'\n\n  export default () => {\n    const query = Gatsby.graphql`{site { siteMetadata { title }}}`\n    const siteTitle = Gatsby.useStaticQuery(query)\n\n    return (\n      <h1>{siteTitle.site.siteMetadata.title}</h1>\n    )\n  }\n  ");
 });
-it(`Transforms queries in <StaticQuery>`, () => {
-  matchesSnapshot(`
-  import * as React from 'react'
-  import { graphql, StaticQuery } from 'gatsby'
-
-  export default () => (
-    <StaticQuery
-      query={graphql\`{site { siteMetadata { title }}}\`}
-      render={data => <div>{data.site.siteMetadata.title}</div>}
-    />
-  )
-  `);
+it("Transforms queries in <StaticQuery>", function () {
+  matchesSnapshot("\n  import * as React from 'react'\n  import { graphql, StaticQuery } from 'gatsby'\n\n  export default () => (\n    <StaticQuery\n      query={graphql`{site { siteMetadata { title }}}`}\n      render={data => <div>{data.site.siteMetadata.title}</div>}\n    />\n  )\n  ");
 });
-it(`Transforms queries defined in own variable in <StaticQuery>`, () => {
-  matchesSnapshot(`
-  import * as React from 'react'
-  import { graphql, StaticQuery } from 'gatsby'
-
-  const query = graphql\`{site { siteMetadata { title }}}\`
-
-  export default () => (
-    <StaticQuery
-      query={query}
-      render={data => <div>{data.site.siteMetadata.title}</div>}
-    />
-  )
-  `);
+it("Transforms queries defined in own variable in <StaticQuery>", function () {
+  matchesSnapshot("\n  import * as React from 'react'\n  import { graphql, StaticQuery } from 'gatsby'\n\n  const query = graphql`{site { siteMetadata { title }}}`\n\n  export default () => (\n    <StaticQuery\n      query={query}\n      render={data => <div>{data.site.siteMetadata.title}</div>}\n    />\n  )\n  ");
 });
-it(`transforms exported variable queries in <StaticQuery>`, () => {
-  matchesSnapshot(`
-  import * as React from 'react'
-  import { graphql, StaticQuery } from 'gatsby'
-
-  export const query = graphql\`{site { siteMetadata { title }}}\`
-
-  export default () => (
-    <StaticQuery
-      query={query}
-      render={data => <div>{data.site.siteMetadata.title}</div>}
-    />
-  )
-  `);
+it("transforms exported variable queries in <StaticQuery>", function () {
+  matchesSnapshot("\n  import * as React from 'react'\n  import { graphql, StaticQuery } from 'gatsby'\n\n  export const query = graphql`{site { siteMetadata { title }}}`\n\n  export default () => (\n    <StaticQuery\n      query={query}\n      render={data => <div>{data.site.siteMetadata.title}</div>}\n    />\n  )\n  ");
 });
-it(`Transforms queries in page components`, () => {
-  matchesSnapshot(`
-  import { graphql } from 'gatsby'
-
-  export const query = graphql\`
-     {
-       site { siteMetadata { title }}
-     }
-  \`
-  `);
+it("Transforms queries in page components", function () {
+  matchesSnapshot("\n  import { graphql } from 'gatsby'\n\n  export const query = graphql`\n     {\n       site { siteMetadata { title }}\n     }\n  `\n  ");
 });
-it(`allows the global tag`, () => {
-  matchesSnapshot(`
-  export const query = graphql\`
-     {
-       site { siteMetadata { title }}
-     }
-  \`
-  `);
+it("allows the global tag", function () {
+  matchesSnapshot("\n  export const query = graphql`\n     {\n       site { siteMetadata { title }}\n     }\n  `\n  ");
 });
-it(`distinguishes between the right tags`, () => {
-  matchesSnapshot(`
-  const foo = styled('div')\`
-     {
-       $\{foo}
-     }
-  \`
-
-  const pulse = keyframes\`
-    0% {
-      transform: scale(1);
-      animation-timing-function: ease-in;
-    }
-    25% {
-      animation-timing-function: ease-out;
-      transform: scale(1.05);
-    }
-    50% {
-      transform: scale(1.12);
-      animation-timing-function: ease-in;
-    }
-    to {
-      transform: scale(1);
-      animation-timing-function: ease-out;
-    }
-  \`;
-
-  export const query = graphql\`
-     {
-       site { siteMetadata { title }}
-     }
-  \`
-  `);
+it("distinguishes between the right tags", function () {
+  matchesSnapshot("\n  const foo = styled('div')`\n     {\n       ${foo}\n     }\n  `\n\n  const pulse = keyframes`\n    0% {\n      transform: scale(1);\n      animation-timing-function: ease-in;\n    }\n    25% {\n      animation-timing-function: ease-out;\n      transform: scale(1.05);\n    }\n    50% {\n      transform: scale(1.12);\n      animation-timing-function: ease-in;\n    }\n    to {\n      transform: scale(1);\n      animation-timing-function: ease-out;\n    }\n  `;\n\n  export const query = graphql`\n     {\n       site { siteMetadata { title }}\n     }\n  `\n  ");
 });
-it(`handles import aliasing`, () => {
-  matchesSnapshot(`
-  import { graphql as gql } from 'gatsby'
-
-  export const query = gql\`
-     {
-       site { siteMetadata { title }}
-     }
-  \`
-  `);
+it("handles import aliasing", function () {
+  matchesSnapshot("\n  import { graphql as gql } from 'gatsby'\n\n  export const query = gql`\n     {\n       site { siteMetadata { title }}\n     }\n  `\n  ");
 });
-it(`handles require`, () => {
-  matchesSnapshot(`
-  const { graphql } = require('gatsby')
-
-  export const query = graphql\`
-     {
-       site { siteMetadata { title }}
-     }
-  \`
-  `);
+it("handles require", function () {
+  matchesSnapshot("\n  const { graphql } = require('gatsby')\n\n  export const query = graphql`\n     {\n       site { siteMetadata { title }}\n     }\n  `\n  ");
 });
-it(`handles require namespace`, () => {
-  matchesSnapshot(`
-  const Gatsby = require('gatsby')
-
-  export const query = Gatsby.graphql\`
-     {
-       site { siteMetadata { title }}
-     }
-  \`
-  `);
+it("handles require namespace", function () {
+  matchesSnapshot("\n  const Gatsby = require('gatsby')\n\n  export const query = Gatsby.graphql`\n     {\n       site { siteMetadata { title }}\n     }\n  `\n  ");
 });
-it(`handles require alias`, () => {
-  matchesSnapshot(`
-  const { graphql: gql } = require('gatsby')
-
-  export const query = gql\`
-     {
-       site { siteMetadata { title }}
-     }
-  \`
-  `);
+it("handles require alias", function () {
+  matchesSnapshot("\n  const { graphql: gql } = require('gatsby')\n\n  export const query = gql`\n     {\n       site { siteMetadata { title }}\n     }\n  `\n  ");
 });
-it(`Leaves other graphql tags alone`, () => {
-  matchesSnapshot(`
-  import * as React from 'react'
-  import { graphql } from 'relay'
-
-  export default () => (
-    <div>{data.site.siteMetadata.title}</div>
-  )
-
-  export const query = graphql\`
-     {
-       site { siteMetadata { title }}
-     }
-  \`
-  `);
+it("Leaves other graphql tags alone", function () {
+  matchesSnapshot("\n  import * as React from 'react'\n  import { graphql } from 'relay'\n\n  export default () => (\n    <div>{data.site.siteMetadata.title}</div>\n  )\n\n  export const query = graphql`\n     {\n       site { siteMetadata { title }}\n     }\n  `\n  ");
 });
-it(`Removes all gatsby queries`, () => {
-  matchesSnapshot(`
-  import { graphql } from 'gatsby'
-
-  export default () => (
-    <div>{data.site.siteMetadata.title}</div>
-  )
-
-  export const siteMetaQuery = graphql\`
-    fragment siteMetaQuery on RootQueryType {
-      site {
-        siteMetadata {
-          title
-        }
-      }
-    }
-  \`
-
-  export const query = graphql\`
-     {
-       ...siteMetaQuery
-     }
-  \`
-  `);
+it("Removes all gatsby queries", function () {
+  matchesSnapshot("\n  import { graphql } from 'gatsby'\n\n  export default () => (\n    <div>{data.site.siteMetadata.title}</div>\n  )\n\n  export const siteMetaQuery = graphql`\n    fragment siteMetaQuery on RootQueryType {\n      site {\n        siteMetadata {\n          title\n        }\n      }\n    }\n  `\n\n  export const query = graphql`\n     {\n       ...siteMetaQuery\n     }\n  `\n  ");
 });
-it(`Handles closing StaticQuery tag`, () => {
-  matchesSnapshot(`
-  import * as React from 'react'
-  import { graphql, StaticQuery } from 'gatsby'
-
-  export default () => (
-    <StaticQuery
-      query={graphql\`{site { siteMetadata { title }}}\`}
-    >
-      {data => <div>{data.site.siteMetadata.title}</div>}
-    </StaticQuery>
-  )
-  `);
+it("Handles closing StaticQuery tag", function () {
+  matchesSnapshot("\n  import * as React from 'react'\n  import { graphql, StaticQuery } from 'gatsby'\n\n  export default () => (\n    <StaticQuery\n      query={graphql`{site { siteMetadata { title }}}`}\n    >\n      {data => <div>{data.site.siteMetadata.title}</div>}\n    </StaticQuery>\n  )\n  ");
 });
-it(`Doesn't add data import for non static queries`, () => {
-  matchesSnapshot(`
-  import * as React from 'react'
-  import { StaticQuery, graphql } from "gatsby"
-
-  const Test = () => (
-    <StaticQuery
-      query={graphql\`
-      {
-        site {
-          siteMetadata {
-            title
-          }
-        }
-      }
-      \`}
-      render={data => <div>{data.site.siteMetadata.title}</div>}
-    />
-  )
-
-  export default Test
-
-  export const fragment = graphql\`
-    fragment MarkdownNodeFragment on MarkdownRemark {
-      html
-    }
-  \`
-  `);
+it("Doesn't add data import for non static queries", function () {
+  matchesSnapshot("\n  import * as React from 'react'\n  import { StaticQuery, graphql } from \"gatsby\"\n\n  const Test = () => (\n    <StaticQuery\n      query={graphql`\n      {\n        site {\n          siteMetadata {\n            title\n          }\n        }\n      }\n      `}\n      render={data => <div>{data.site.siteMetadata.title}</div>}\n    />\n  )\n\n  export default Test\n\n  export const fragment = graphql`\n    fragment MarkdownNodeFragment on MarkdownRemark {\n      html\n    }\n  `\n  ");
 });

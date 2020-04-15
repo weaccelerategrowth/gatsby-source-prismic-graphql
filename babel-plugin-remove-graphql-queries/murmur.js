@@ -1,15 +1,15 @@
 "use strict";
 
 // murmurhash2 via https://gist.github.com/raycmorgan/588423
-module.exports = (str, seed) => {
-  let m = 0x5bd1e995;
-  let r = 24;
-  let h = seed ^ str.length;
-  let length = str.length;
-  let currentIndex = 0;
+module.exports = function (str, seed) {
+  var m = 0x5bd1e995;
+  var r = 24;
+  var h = seed ^ str.length;
+  var length = str.length;
+  var currentIndex = 0;
 
   while (length >= 4) {
-    let k = UInt32(str, currentIndex);
+    var k = UInt32(str, currentIndex);
     k = Umul32(k, m);
     k ^= k >>> r;
     k = Umul32(k, m);
@@ -54,8 +54,8 @@ function UInt16(str, pos) {
 function Umul32(n, m) {
   n = n | 0;
   m = m | 0;
-  let nlo = n & 0xffff;
-  let nhi = n >>> 16;
-  let res = nlo * m + ((nhi * m & 0xffff) << 16) | 0;
+  var nlo = n & 0xffff;
+  var nhi = n >>> 16;
+  var res = nlo * m + ((nhi * m & 0xffff) << 16) | 0;
   return res;
 }

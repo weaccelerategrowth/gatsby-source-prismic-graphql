@@ -209,6 +209,10 @@ function isUseStaticQuery(path) {
   return path.node.callee.type === "MemberExpression" && path.node.callee.property.name === "useStaticQuery" && path.get("callee").get("object").referencesImport("gatsby") || path.node.callee.name === "useStaticQuery" && path.get("callee").referencesImport("gatsby");
 }
 
+function getGraphqlExpr(t, queryHash, source) {
+  return t.objectExpression([t.objectProperty(t.identifier("id"), t.stringLiteral(queryHash)), t.objectProperty(t.identifier("source"), t.stringLiteral(source)), t.objectMethod("method", t.identifier("toString"), [], t.blockStatement([t.returnStatement(t.memberExpression(t.identifier("this"), t.identifier("id")))]))]);
+}
+
 function _default(_ref) {
   var t = _ref.types;
   return {
