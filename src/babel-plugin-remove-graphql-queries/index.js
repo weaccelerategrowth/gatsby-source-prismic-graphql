@@ -12,12 +12,10 @@ function getGraphqlExpr(t, queryHash, source) {
       t.identifier('id'),
       t.stringLiteral(queryHash)
     ),
-   // t.objectProperty(t.identifier(`staticQueryData`), t.identifier(`data`)),
     t.objectProperty(
       t.identifier('source'),
       t.stringLiteral(source)
     ),
-    
     t.objectMethod(
       'method',
       t.identifier('toString'),
@@ -268,8 +266,8 @@ export default function({ types: t }) {
 
               // Add query
               path2.replaceWith(getGraphqlExpr(t, this.queryHash, this.query))
-              // from gatsby
-              // path2.replaceWith(t.memberExpression(identifier, t.identifier(`data`)))
+              // Add siteMetaData query
+              path2.replaceWith(t.memberExpression(identifier, t.identifier(`data`)))
               // Add import
               const importDefaultSpecifier = t.importDefaultSpecifier(
                 identifier
