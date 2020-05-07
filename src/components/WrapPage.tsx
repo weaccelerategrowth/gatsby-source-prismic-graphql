@@ -1,4 +1,4 @@
-import cloneDeep from 'lodash/clonedeep';
+import cloneDeep from 'lodash/cloneDeep';
 import gql from 'graphql-tag';
 import pick from 'lodash/pick';
 import get from 'lodash/get';
