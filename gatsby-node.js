@@ -26,7 +26,7 @@ var _utils = require("./utils");
 
 var _gatsbySourceFilesystem = require("gatsby-source-filesystem");
 
-var _pathToRegexp = _interopRequireDefault(require("path-to-regexp"));
+var _pathToRegexp = require("path-to-regexp");
 
 var _querystring = _interopRequireDefault(require("querystring"));
 
@@ -130,28 +130,28 @@ exports.sourceNodes = function (ref, options) {
   return (0, _gatsbyNode.sourceNodes)(ref, opts);
 };
 
-function createGeneralPreviewPage(createPage, options) {
+function createGeneralPreviewPage(createPage, allPaths, options) {
   var previewPath = options.previewPath || '/preview';
   createPage({
     path: previewPath.replace(/^\//, ''),
     component: _path.default.resolve(_path.default.join(__dirname, 'components', 'PreviewPage.js')),
     context: {
-      prismicPreviewPage: true
+      prismicPreviewPage: true,
+      prismicAllPagePaths: allPaths
     }
   });
 }
 
-function createDocumentPreviewPage(createPage, page, lang) {
+function createDocumentPreviewPage(createPage, options, page) {
   var rootQuery = getRootQuery(page.component);
   createPage({
-    path: page.path,
-    matchPath: process.env.NODE_ENV === 'production' ? undefined : page.match,
+    path: (0, _utils.getPagePreviewPath)(page),
     component: page.component,
     context: {
       rootQuery: rootQuery,
       id: '',
       uid: '',
-      lang: lang,
+      lang: options.defaultLang,
       paginationPreviousUid: '',
       paginationPreviousLang: '',
       paginationNextUid: '',
@@ -161,12 +161,11 @@ function createDocumentPreviewPage(createPage, page, lang) {
 }
 /**
  * Create URL paths interpolating `:uid` and `:lang` or `:lang?` with actual values.
- * @param pageOptions - Returned paths are based on the `match` or `path` (if `match`
- * is not present) properties of the `pageOptions` object.
+ * @param pageOptions - Returned paths are based on the `match` property of the `pageOptions` object.
  * @param node - Document node metadata provide the `lang` and `uid` values for the returned path.
  * @param options - The plugin's global options.
  * @param options.defaultLang - `defaultLang` as declared in `PluginOptions`. If `lang` segment is
- * marked optional (`:lang?`) in the page `match` or `path` values and `defaultLang` matches the
+ * marked optional (`:lang?`) in the page `match` and `defaultLang` matches the
  * document's actual language, the language segment of the path will be omitted in the returned path.
  * @param options.shortenUrlLangs - When truthy, the lang used for the path will be limited to 2 characters.
  * @return The path for the document's URL with `lang` and `uid` interpolated as necessary.
@@ -177,15 +176,13 @@ function createDocumentPath(pageOptions, node, _ref3) {
   var defaultLang = _ref3.defaultLang,
       shortenUrlLangs = _ref3.shortenUrlLangs;
   var pathKeys = [];
-  var pathTemplate = pageOptions.match || pageOptions.path;
-  (0, _pathToRegexp.default)(pathTemplate, pathKeys);
+  var pathTemplate = pageOptions.match;
+  (0, _pathToRegexp.pathToRegexp)(pathTemplate, pathKeys);
   var langKey = pathKeys.find(function (key) {
     return key.name === 'lang';
   });
-  var isLangOptional = !!(langKey && langKey.optional);
-
-  var toPath = _pathToRegexp.default.compile(pathTemplate);
-
+  var isLangOptional = !!(langKey && langKey.modifier === '?');
+  var toPath = (0, _pathToRegexp.compile)(pathTemplate);
   var documentLang = node._meta.lang;
   var isDocumentLangDefault = documentLang === defaultLang;
   var shouldExcludeLangInPath = isLangOptional && isDocumentLangDefault;
@@ -199,15 +196,18 @@ function createDocumentPath(pageOptions, node, _ref3) {
 }
 
 function createDocumentPages(createPage, edges, options, page) {
-  // Cycle through each document returned from query...
+  var paths = []; // Cycle through each document returned from query...
+
   edges.forEach(function (_ref4, index) {
     var cursor = _ref4.cursor,
         node = _ref4.node;
     var previousNode = edges[index - 1] && edges[index - 1].node;
-    var nextNode = edges[index + 1] && edges[index + 1].node; // ...and create the page
+    var nextNode = edges[index + 1] && edges[index + 1].node;
+    var path = createDocumentPath(page, node, options);
+    paths.push(path); // ...and create the page
 
     createPage({
-      path: createDocumentPath(page, node, options),
+      path: path,
       component: page.component,
       context: (0, _objectSpread2.default)({
         rootQuery: getRootQuery(page.component)
@@ -224,6 +224,7 @@ function createDocumentPages(createPage, edges, options, page) {
       })
     });
   });
+  return paths;
 }
 
 var getDocumentsQuery = function getDocumentsQuery(_ref5) {
@@ -234,15 +235,44 @@ var getDocumentsQuery = function getDocumentsQuery(_ref5) {
 };
 
 exports.createPages = /*#__PURE__*/function () {
-  var _ref7 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2(_ref6, options) {
-    var graphql, createPage, createPagesForType, _createPagesForType, pages, pageCreators;
+  var _ref7 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3(_ref6, options) {
+    var graphql, createPage, getPrismicEdges, _getPrismicEdges, createPagesForType, _createPagesForType, pages, pageCreators, allPaths;
 
-    return _regenerator.default.wrap(function _callee2$(_context2) {
+    return _regenerator.default.wrap(function _callee3$(_context3) {
       while (1) {
-        switch (_context2.prev = _context2.next) {
+        switch (_context3.prev = _context3.next) {
           case 0:
             _createPagesForType = function _createPagesForType3() {
-              _createPagesForType = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee(page, lang) {
+              _createPagesForType = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2(page, lang) {
+                var edges;
+                return _regenerator.default.wrap(function _callee2$(_context2) {
+                  while (1) {
+                    switch (_context2.prev = _context2.next) {
+                      case 0:
+                        _context2.next = 2;
+                        return getPrismicEdges(page, lang);
+
+                      case 2:
+                        edges = _context2.sent;
+                        createDocumentPreviewPage(createPage, options, page);
+                        return _context2.abrupt("return", createDocumentPages(createPage, edges, options, page));
+
+                      case 5:
+                      case "end":
+                        return _context2.stop();
+                    }
+                  }
+                }, _callee2);
+              }));
+              return _createPagesForType.apply(this, arguments);
+            };
+
+            createPagesForType = function _createPagesForType2(_x5, _x6) {
+              return _createPagesForType.apply(this, arguments);
+            };
+
+            _getPrismicEdges = function _getPrismicEdges3() {
+              _getPrismicEdges = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee(page, lang) {
                 var endCursor,
                     documents,
                     documentType,
@@ -302,21 +332,19 @@ exports.createPages = /*#__PURE__*/function () {
                         documents = [].concat((0, _toConsumableArray2.default)(documents), (0, _toConsumableArray2.default)(edges));
 
                         if (!response.pageInfo.hasNextPage) {
-                          _context.next = 23;
+                          _context.next = 24;
                           break;
                         }
 
                         newEndCursor = response.pageInfo.endCursor;
                         _context.next = 21;
-                        return createPagesForType(page, lang, newEndCursor, documents);
+                        return getPrismicEdges(page, lang, newEndCursor, documents);
 
                       case 21:
-                        _context.next = 25;
-                        break;
+                        return _context.abrupt("return", _context.sent);
 
-                      case 23:
-                        createDocumentPreviewPage(createPage, page, lang);
-                        createDocumentPages(createPage, documents, options, page);
+                      case 24:
+                        return _context.abrupt("return", Promise.resolve(documents));
 
                       case 25:
                       case "end":
@@ -325,46 +353,43 @@ exports.createPages = /*#__PURE__*/function () {
                   }
                 }, _callee);
               }));
-              return _createPagesForType.apply(this, arguments);
+              return _getPrismicEdges.apply(this, arguments);
             };
 
-            createPagesForType = function _createPagesForType2(_x3, _x4) {
-              return _createPagesForType.apply(this, arguments);
+            getPrismicEdges = function _getPrismicEdges2(_x3, _x4) {
+              return _getPrismicEdges.apply(this, arguments);
             };
 
             graphql = _ref6.graphql, createPage = _ref6.actions.createPage;
-            createGeneralPreviewPage(createPage, options);
-            /**
-             * Helper that recursively queries GraphQL to collect all documents for the given
-             * page type. Once all documents are collected, it creates pages for them all.
-             * Prismic GraphQL queries only return up to 20 results per query)
-             */
-
-            // Prepare to create all the pages
+            // Create pageCreator promises for each page/language combination
             pages = options.pages || [];
-            pageCreators = []; // Create pageCreator promises for each page/language combination
-
-            pages.forEach(function (page) {
+            pageCreators = (0, _utils.flatten)(pages.map(function (page) {
               var langs = page.langs || options.langs || options.defaultLang && [options.defaultLang];
 
               if (langs) {
-                langs.forEach(function (lang) {
-                  return pageCreators.push(createPagesForType(page, lang));
+                return langs.map(function (lang) {
+                  return createPagesForType(page, lang);
                 });
               } else {
-                pageCreators.push(createPagesForType(page));
+                return [createPagesForType(page)];
               }
-            }); // Run all pageCreators simultaneously
+            })); // Run all pageCreators simultaneously
 
-            _context2.next = 9;
+            _context3.t0 = _utils.flatten;
+            _context3.next = 10;
             return Promise.all(pageCreators);
 
-          case 9:
+          case 10:
+            _context3.t1 = _context3.sent;
+            allPaths = (0, _context3.t0)(_context3.t1);
+            createGeneralPreviewPage(createPage, allPaths, options);
+
+          case 13:
           case "end":
-            return _context2.stop();
+            return _context3.stop();
         }
       }
-    }, _callee2);
+    }, _callee3);
   }));
 
   return function (_x, _x2) {
@@ -415,7 +440,7 @@ exports.createResolvers = function (_ref8, _ref9) {
 
             if (url) {
               return (0, _gatsbySourceFilesystem.createRemoteFileNode)({
-                url: _querystring.default.unescape(url),
+                url: _querystring.default.unescape(url).replace(/\?.*$/g, ''),
                 store: store,
                 cache: cache,
                 createNode: createNode,

@@ -27,7 +27,7 @@ var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/de
 
 var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
 
-var _clonedeep = _interopRequireDefault(require("lodash/clonedeep"));
+var _cloneDeep = _interopRequireDefault(require("lodash/cloneDeep"));
 
 var _graphqlTag = _interopRequireDefault(require("graphql-tag"));
 
@@ -35,7 +35,7 @@ var _pick = _interopRequireDefault(require("lodash/pick"));
 
 var _get2 = _interopRequireDefault(require("lodash/get"));
 
-var _pathToRegexp = _interopRequireDefault(require("path-to-regexp"));
+var _pathToRegexp = require("path-to-regexp");
 
 var _prismicJavascript = _interopRequireDefault(require("prismic-javascript"));
 
@@ -67,8 +67,8 @@ var queryOrSource = function queryOrSource(obj) {
 
 var stripSharp = function stripSharp(query) {
   return (0, _traverse.default)(query).map(function (x) {
-    if ((0, _typeof2.default)(x) === 'object' && x.kind == 'Name' && this.parent && this.parent.node.kind === 'Field' && x.value.match(/Sharp$/)) {
-      this.parent.delete();
+    if ((0, _typeof2.default)(x) === 'object' && x.kind == 'Name' && this.parent && this.parent.node.kind === 'Field' && x.value.match(/Sharp$/) && !x.value.match(/.+childImageSharp$/)) {
+      this.parent.remove();
     }
   });
 };
@@ -118,7 +118,7 @@ var WrapPage = /*#__PURE__*/function (_React$PureComponent) {
       return (0, _getApolloClient.getApolloClient)(_this.props.options).then(function (client) {
         return client.query((0, _objectSpread2.default)({
           query: stripSharp(getIsolatedQuery(query, _utils.fieldName, _utils.typeName)),
-          fetchPolicy: 'network-only',
+          fetchPolicy: 'no-cache',
           variables: variables
         }, rest));
       });
@@ -200,26 +200,27 @@ var WrapPage = /*#__PURE__*/function (_React$PureComponent) {
   }, {
     key: "params",
     get: function get() {
+      var _this3 = this;
+
       var params = (0, _objectSpread2.default)({}, this.props.pageContext);
       var keys = [];
-      var re = (0, _pathToRegexp.default)((0, _get2.default)(this.props.pageContext, 'matchPath', ''), keys);
+      var re = (0, _pathToRegexp.pathToRegexp)((0, _get2.default)(this.props.pageContext, 'matchPath', ''), keys);
       var match = re.exec((0, _get2.default)(this.props, 'location.pathname', ''));
-
-      if (match) {
-        keys.forEach(function (value, index) {
-          if (!params[value.name]) {
-            params[value.name] = match[index + 1];
-          }
-        });
-      }
-
-      var qs = (0, _parseQueryString.parseQueryString)(String((0, _get2.default)(this.props, 'location.search', '?')).substr(1));
-      this.keys.forEach(function (key) {
-        if (!params[key] && qs.has(key)) {
-          params[key] = qs.get(key);
-        }
+      var matchFn = (0, _pathToRegexp.match)((0, _get2.default)(this.props.pageContext, 'matchPath', ''), {
+        decode: decodeURIComponent
       });
-      return params;
+
+      var pathParams = function () {
+        var res = matchFn((0, _get2.default)(_this3.props, 'location.pathname', ''));
+        return res ? res.params : {};
+      }();
+
+      var qsParams = function () {
+        var qsValue = String((0, _get2.default)(_this3.props, 'location.search', '?')).substr(1);
+        return (0, _parseQueryString.parseQueryStringAsJson)(qsValue);
+      }();
+
+      return Object.assign(params, qsParams, pathParams);
     }
   }]);
   return WrapPage;
@@ -241,7 +242,7 @@ function getQuery(query) {
 
 function getIsolatedQuery(querySource, fieldName, typeName) {
   var query = getQuery(querySource);
-  var updatedQuery = (0, _clonedeep.default)(query);
+  var updatedQuery = (0, _cloneDeep.default)(query);
   var updatedRoot = updatedQuery.definitions[0].selectionSet.selections.find(function (selection) {
     return selection.name && selection.name.kind === 'Name' && selection.name.value === fieldName;
   });

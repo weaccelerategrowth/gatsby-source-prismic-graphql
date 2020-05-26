@@ -3,7 +3,9 @@
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
 exports.__esModule = true;
+exports.flatten = flatten;
 exports.registerLinkResolver = registerLinkResolver;
+exports.getPagePreviewPath = getPagePreviewPath;
 exports.getCookies = getCookies;
 exports.getDocumentIndexFromCursor = getDocumentIndexFromCursor;
 exports.getCursorFromDocumentIndex = getCursorFromDocumentIndex;
@@ -42,8 +44,18 @@ var linkResolver = function linkResolver() {
 
 exports.linkResolver = linkResolver;
 
+function flatten(arr) {
+  return arr.reduce(function (a, b) {
+    return a.concat(b);
+  }, []);
+}
+
 function registerLinkResolver(link) {
   exports.linkResolver = linkResolver = link;
+}
+
+function getPagePreviewPath(page) {
+  return page.previewPath || '/preview/' + page.type.toLowerCase();
 }
 
 function getCookies() {

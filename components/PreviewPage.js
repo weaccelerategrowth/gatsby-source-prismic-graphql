@@ -29,11 +29,11 @@ var _react = _interopRequireDefault(require("react"));
 
 var _prismicJavascript = _interopRequireDefault(require("prismic-javascript"));
 
+var _pathToRegexp = require("path-to-regexp");
+
 var _utils = require("../utils");
 
 var _parseQueryString = require("../utils/parseQueryString");
-
-var _pathToRegexp = _interopRequireDefault(require("path-to-regexp"));
 
 function _createSuper(Derived) { return function () { var Super = (0, _getPrototypeOf2.default)(Derived), result; if (_isNativeReflectConstruct()) { var NewTarget = (0, _getPrototypeOf2.default)(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2.default)(this, result); }; }
 
@@ -56,7 +56,7 @@ var PreviewPage = /*#__PURE__*/function (_React$Component) {
     _this = _super.call.apply(_super, [this].concat(args));
     (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "redirect", /*#__PURE__*/function () {
       var _ref = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee(doc) {
-        var link, urlWithQueryString, exists;
+        var link, pathWithQS, pageExists, newUrl;
         return _regenerator.default.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
@@ -71,9 +71,9 @@ var PreviewPage = /*#__PURE__*/function (_React$Component) {
 
               case 3:
                 link = (0, _utils.linkResolver)(doc);
-                urlWithQueryString = (_this.config.pages || []).map(function (page) {
+                pathWithQS = (_this.config.pages || []).map(function (page) {
                   var keys = [];
-                  var re = (0, _pathToRegexp.default)(page.match, keys);
+                  var re = (0, _pathToRegexp.pathToRegexp)(page.match, keys);
                   var match = re.exec(link);
 
                   var delimiter = function delimiter(str) {
@@ -82,30 +82,24 @@ var PreviewPage = /*#__PURE__*/function (_React$Component) {
 
                   if (match) {
                     return match.slice(1).reduce(function (acc, value, i) {
-                      return acc + (keys[i] ? "".concat(delimiter(acc)).concat(keys[i].name, "=").concat(value) : value);
-                    }, page.path);
+                      if (keys[i] && value !== undefined) return acc + "".concat(delimiter(acc)).concat(keys[i].name, "=").concat(value);else return acc;
+                    }, (0, _utils.getPagePreviewPath)(page));
                   }
 
                   return null;
                 }).find(function (n) {
                   return !!n;
                 });
-                _context.next = 7;
-                return fetch(link).then(function (res) {
-                  return res.status;
-                });
+                pageExists = _this.props.pageContext.prismicAllPagePaths.indexOf(link) !== -1;
 
-              case 7:
-                _context.t0 = _context.sent;
-                exists = _context.t0 === 200;
-
-                if (!exists && urlWithQueryString) {
-                  window.location = urlWithQueryString;
+                if (!pageExists && pathWithQS) {
+                  newUrl = "".concat(window.location.protocol, "//").concat(window.location.host).concat(pathWithQS);
+                  window.location.replace(newUrl);
                 } else {
-                  window.location = link;
+                  window.location.replace(link);
                 }
 
-              case 10:
+              case 7:
               case "end":
                 return _context.stop();
             }

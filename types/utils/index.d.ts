@@ -1,4 +1,5 @@
 import { HttpOptions } from 'apollo-link-http-common';
+import { Page } from '../interfaces/PluginOptions';
 interface IPrismicLinkArgs extends HttpOptions {
     uri: string;
     accessToken?: string;
@@ -9,7 +10,9 @@ interface IPrismicLinkArgs extends HttpOptions {
 export declare const fieldName = "prismic";
 export declare const typeName = "PRISMIC";
 export declare let linkResolver: (doc: any) => string;
+export declare function flatten<T>(arr: T[][]): T[];
 export declare function registerLinkResolver(link: typeof linkResolver): void;
+export declare function getPagePreviewPath(page: Page): string;
 export declare function getCookies(): Map<string, string>;
 export declare function getDocumentIndexFromCursor(cursor: string): string;
 export declare function getCursorFromDocumentIndex(index: number): string;
