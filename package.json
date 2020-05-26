@@ -25,7 +25,7 @@
   "scripts": {
     "watch": "tsc -w --emitDeclarationOnly",
     "build": "tsc --emitDeclarationOnly && babel src --out-dir ./ --extensions '.js,.ts,.tsx'",
-    "clean": "rimraf {interfaces,types,components,utils,*.js}",
+    "clean": "rimraf {babel-plugin-remove-graphql-queries,interfaces,types,components,utils,*.js}",
     "prepare": "npm run clean && cross-env NODE_ENV=production npm run build",
     "start": "babel src --out-dir ./ --extensions '.js,.ts,.tsx' --watch",
     "test": "jest"

@@ -1,3 +1,11 @@
 node_modules
 *.log
 .DS_Store
+
+// built files
+/babel-plugin-remove-graphql-queries
+/interfaces
+/types
+/components
+/utils
+/*.js
