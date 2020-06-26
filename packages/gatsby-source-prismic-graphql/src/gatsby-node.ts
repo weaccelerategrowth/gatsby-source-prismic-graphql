@@ -1,6 +1,10 @@
 import path from 'path';
-import { getRootQuery } from 'gatsby-source-graphql-universal/getRootQuery';
-import { onCreateWebpackConfig, sourceNodes } from 'gatsby-source-graphql-universal/gatsby-node';
+import querystring from 'querystring';
+import { getRootQuery } from '@prismicio/gatsby-source-graphql-universal/getRootQuery';
+import {
+  onCreateWebpackConfig,
+  sourceNodes,
+} from '@prismicio/gatsby-source-graphql-universal/gatsby-node';
 import { flatten, fieldName, PrismicLink, typeName, getPagePreviewPath } from './utils';
 import { Page, PluginOptions } from './interfaces/PluginOptions';
 import { createRemoteFileNode } from 'gatsby-source-filesystem';

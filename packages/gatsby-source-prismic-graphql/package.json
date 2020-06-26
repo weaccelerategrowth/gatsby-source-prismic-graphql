@@ -1,16 +1,19 @@
 {
   "private": false,
-  "name": "gatsby-source-prismic-graphql",
+  "name": "@prismicio/gatsby-source-prismic-graphql",
   "description": "Source data from Prismic with GraphQL",
   "license": "MIT",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
-  "homepage": "https://github.com/birkir/gatsby-source-prismic-graphql#readme",
+  "contributors": [
+    "Marc McIntosh <marc.mcintosh@prismic.io>"
+  ],
+  "homepage": "https://github.com/prsimicio/gatsby-source-prismic-graphql#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/birkir/gatsby-source-prismic-graphql.git"
+    "url": "git+https://github.com/prismicio/gatsby-source-prismic-graphql.git"
   },
   "bugs": {
-    "url": "https://github.com/birkir/gatsby-source-prismic-graphql/issues"
+    "url": "https://github.com/prismicio/gatsby-source-prismic-graphql/issues"
   },
   "version": "3.6.2",
   "main": "index.js",
@@ -29,12 +32,12 @@
   },
   "types": "./types/index.d.ts",
   "dependencies": {
+    "@prismicio/gatsby-source-graphql-universal": "^3.4.0",
     "apollo-boost": "^0.3.1",
     "apollo-link-context": "^1.0.17",
     "gatsby-image": "^2.2.4",
     "gatsby-source-filesystem": "^2.1.2",
     "gatsby-source-graphql": "^2.1.32",
-    "gatsby-source-graphql-universal": "^3.2.0",
     "path-to-regexp": "^6.0.0",
     "prismic-javascript": "^2.1.1",
     "traverse": "^0.6.6",
