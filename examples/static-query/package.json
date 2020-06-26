@@ -1,7 +1,7 @@
 {
   "name": "@examples/static-query",
   "private": true,
-  "version": "3.6.2",
+  "version": "3.6.3",
   "description": "A simple starter to get up and developing quickly with Gatsby",
   "author": "Kyle Mathews <mathews.kyle@gmail.com>",
   "dependencies": {
