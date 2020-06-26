@@ -15,7 +15,7 @@
   "bugs": {
     "url": "https://github.com/prismicio/gatsby-source-prismic-graphql/issues"
   },
-  "version": "3.6.5",
+  "version": "3.6.4",
   "main": "index.js",
   "files": [
     "*.js",
