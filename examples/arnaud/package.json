@@ -6,21 +6,28 @@
   "author": "Kyle Mathews <mathews.kyle@gmail.com>",
   "dependencies": {
     "@babel/polyfill": "^7.2.5",
+    "@commitlint/cli": "^7.5.2",
+    "@commitlint/config-conventional": "^7.5.0",
+    "@prismicio/gatsby-source-prismic-graphql": "^3.6.7",
     "esm": "^3.2.18",
     "gatsby": "^2.13.37",
     "gatsby-image": "^2.0.34",
     "gatsby-plugin-manifest": "^2.0.24",
     "gatsby-plugin-offline": "^2.0.25",
     "gatsby-plugin-react-helmet": "^3.0.10",
-    "gatsby-plugin-sharp": "^2.2.9",
+    "gatsby-plugin-sharp": "^2.6.18",
     "gatsby-source-filesystem": "^2.0.27",
-    "gatsby-source-prismic-graphql": "^3.6.2",
-    "gatsby-transformer-sharp": "^2.2.5",
+    "gatsby-transformer-sharp": "^2.5.10",
+    "lerna": "^3.13.1",
+    "lint-staged": "^8.1.5",
+    "prettier": "^1.16.4",
     "prismic-reactjs": "^0.3.2",
     "prop-types": "^15.7.2",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
-    "react-helmet": "^5.2.0"
+    "react-helmet": "^5.2.0",
+    "tslint": "^5.14.0",
+    "typescript": "^3.3.3333"
   },
   "devDependencies": {
     "prettier": "^1.16.4"
@@ -35,6 +42,7 @@
     "format": "prettier --write src/**/*.{js,jsx}",
     "start": "npm run develop",
     "serve": "gatsby serve",
+    "clean": "gatsby clean",
     "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\""
   },
   "eslintIgnore": [

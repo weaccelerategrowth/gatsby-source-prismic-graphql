@@ -1,6 +1,6 @@
 import React from 'react';
 import { graphql, StaticQuery } from 'gatsby';
-import { withPreview } from 'gatsby-source-prismic-graphql';
+import { withPreview } from '@prismicio/gatsby-source-prismic-graphql';
 import { RichText } from 'prismic-reactjs';
 import Img from 'gatsby-image';
 
@@ -39,7 +39,7 @@ const query = graphql`
   }
 `;
 
-const renderArticles = data => {
+const renderArticles = (data) => {
   return (
     <>
       <h1>List of articles</h1>
