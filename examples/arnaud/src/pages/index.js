@@ -3,6 +3,7 @@ import { RichText } from 'prismic-reactjs';
 import { graphql, Link } from 'gatsby';
 import { linkResolver } from '../prismic/linkResolver';
 import Layout from '../components/layout';
+import Image from '../components/image';
 
 export const query = graphql`
   query {
@@ -38,6 +39,7 @@ const Homepage = props => {
     <Layout>
       <div id="homepage">
         <h1>{RichText.asText(data.title)}</h1>
+        <Image />
         <ul>
           {props.data.prismic.allBlogposs.edges.map(({ node }) => {
             const page = linkResolver(node._meta);
