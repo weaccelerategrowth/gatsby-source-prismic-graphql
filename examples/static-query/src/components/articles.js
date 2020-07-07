@@ -25,13 +25,13 @@ const query = graphql`
             }
             title
             image
-            imageSharp {
-              childImageSharp {
-                fixed {
-                  ...GatsbyImageSharpFixed
-                }
-              }
-            }
+            #            imageSharp {
+            #              childImageSharp {
+            #                fixed {
+            #                  ...GatsbyImageSharpFixed
+            #                }
+            #              }
+            #            }
           }
         }
       }
@@ -39,7 +39,7 @@ const query = graphql`
   }
 `;
 
-const renderArticles = (data) => {
+const renderArticles = data => {
   return (
     <>
       <h1>List of articles</h1>
@@ -58,7 +58,7 @@ const renderArticles = (data) => {
 export const Articles = () => {
   return (
     <>
-      <StaticQuery query={query} render={withPreview(renderArticles, query)} />
+      <StaticQuery query={`${query}`} render={withPreview(data => renderArticles(data), query)} />
     </>
   );
 };
