@@ -37,7 +37,7 @@
     "format": "prettier --write src/**/*.{js,jsx}",
     "start": "npm run develop",
     "serve": "gatsby serve",
-    "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\"",
+    "test": "yarn test:e2e:ci",
     "clean": "gatsby clean",
     "cy:open": "gatsby clean && cypress open",
     "cy:run": "gatsby clean && cypress run",
