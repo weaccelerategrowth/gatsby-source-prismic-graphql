@@ -2,7 +2,7 @@
 
 A Gatsby plugin for fetching source data from the [Prismic headless CMS](https://prismic.io) using Prismic's beta [GraphQL API](https://prismic.io/docs/graphql/getting-started/integrate-with-existing-js-project). This plugin provides full support for Prismic's preview feature out of the box.
 
-For more context, be sure to checkout Prismic's getting started guide: [Using Prismic With Gatsby](https://prismic.io/docs/reactjs/getting-started/prismic-gatsby). This README, however, serves as the most-up-to-date source of information on `gatsby-source-prismic-graphql`'s latest developments and breaking changes.
+For more context, be sure to checkout Prismic's getting started guide: [Using Prismic With Gatsby](https://prismic.io/docs/reactjs/getting-started/prismic-gatsby). This README, however, serves as the most-up-to-date source of information on `@prismicio/gatsby-source-prismic-graphql`'s latest developments and breaking changes.
 
 Please **be sure your Prismic repository has the GraphQL API enabled**. It is enabled by default on all new Prismic repositories. If you have an older repository or are unable to access `https://[your_repo].prismic.io/graphql`, please reach out to Prismic support to request the GraphQL API.
 
@@ -27,7 +27,7 @@ Please **be sure your Prismic repository has the GraphQL API enabled**. It is en
 
 ## Differences From `gatsby-source-prismic`
 
-`gatsby-source-prismic-graphql` (this plugin) fetches data using Prismic's beta [GraphQL API](https://prismic.io/docs/graphql/getting-started/integrate-with-existing-js-project) and provides full support for Prismic's Preview feature out of the box. It also provides an easy-to-configure interface for page generation.
+`@prismicio/gatsby-source-prismic-graphql` (this plugin) fetches data using Prismic's beta [GraphQL API](https://prismic.io/docs/graphql/getting-started/integrate-with-existing-js-project) and provides full support for Prismic's Preview feature out of the box. It also provides an easy-to-configure interface for page generation.
 
 [`gatsby-source-prismic`](https://github.com/angeloashmore/gatsby-source-prismic) is a different plugin that fetches data using Prismic's REST and Javascript APIs. Previews must be coded up separately.
 
@@ -49,7 +49,7 @@ yarn add gatsby-source-prismic-graphql
 
 ```js
 {
-  resolve: 'gatsby-source-prismic-graphql',
+  resolve: '@prismicio/gatsby-source-prismic-graphql',
   options: {
     repositoryName: 'gatsby-source-prismic-test-site', // required
     defaultLang: 'en-us', // optional, but recommended
@@ -176,7 +176,7 @@ Prismic allows you to create your content in multiple languages. This library su
 
 ```js
 {
-  resolve: 'gatsby-source-prismic-graphql',
+  resolve: '@prismicio/gatsby-source-prismic-graphql',
   options: {
     repositoryName: 'gatsby-source-prismic-test-site',
     defaultLang: 'en-us',
@@ -267,7 +267,7 @@ You can use `StaticQuery` as usual, but if you would like to preview them, you m
 
 ```js
 import { StaticQuery, graphql } from 'gatsby';
-import { withPreview } from 'gatsby-source-prismic-graphql';
+import { withPreview } from '@prismicio/gatsby-source-prismic-graphql';
 
 const articlesQuery = graphql`
   query {
@@ -316,7 +316,7 @@ export default MyPage;
 
 ```jsx
 import { StaticQuery, graphql } from 'gatsby';
-import { withPreview } from 'gatsby-source-prismic-graphql';
+import { withPreview } from '@prismicio/gatsby-source-prismic-graphql';
 
 const fragmentX = graphql` fragment X on Y { ... } `;
 
@@ -505,11 +505,11 @@ Therefore, we can use A/B experiments from Prismic in the following way:
 ## Development
 
 ```bash
-git clone git@github.com:birkir/gatsby-source-prismic-graphql.git
+git clone git@github.com:prismicio/gatsby-source-prismic-graphql.git
 cd gatsby-source-prismic-graphql
-yarn install
-yarn setup
-yarn start
+yarn
+# run all examples with cypress
+yarn test
 
 # select example to work with
 cd examples/default
