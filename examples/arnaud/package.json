@@ -46,8 +46,8 @@
     "serve": "gatsby serve",
     "clean": "gatsby clean",
     "test": "yarn test:e2e:ci",
-    "cy:open": "gatsby clean && cypress open",
-    "cy:run": "gatsby clean && cypress run",
+    "cy:open": "cypress open",
+    "cy:run": "cypress run",
     "test:e2e": "start-server-and-test develop http://localhost:8000 cy:open",
     "test:e2e:ci": "start-server-and-test develop http://localhost:8000 cy:run"
   },
