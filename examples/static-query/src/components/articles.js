@@ -25,13 +25,13 @@ const query = graphql`
             }
             title
             image
-            #            imageSharp {
-            #              childImageSharp {
-            #                fixed {
-            #                  ...GatsbyImageSharpFixed
-            #                }
-            #              }
-            #            }
+            imageSharp {
+              childImageSharp {
+                fixed {
+                  ...GatsbyImageSharpFixed
+                }
+              }
+            }
           }
         }
       }
