@@ -9,6 +9,14 @@ import { flatten, fieldName, PrismicLink, typeName, getPagePreviewPath } from '.
 import { Page, PluginOptions } from './interfaces/PluginOptions';
 import { createRemoteFileNode } from 'gatsby-source-filesystem';
 import { pathToRegexp, compile as compilePath, Key } from 'path-to-regexp';
+import { existsSync, mkdirSync } from 'fs';
+
+exports.onPreBootstrap = () => {
+  const dir = './.cache/caches/@prismicio/gatsby-source-prismic-graphql';
+  if (existsSync(dir) === false) {
+    mkdirSync(dir, { recursive: true });
+  }
+};
 
 interface Edge {
   cursor: string;
