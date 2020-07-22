@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-context('Arnaud', () => {
+context('Typescript', () => {
   beforeEach(() => {
     cy.visit('/');
   });
