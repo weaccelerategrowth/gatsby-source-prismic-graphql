@@ -94,7 +94,7 @@ const renderHomepage = (props: HomepageProps) => {
 
 const Homepage: FC = () => {
   const data = useStaticQuery(query);
-  const render = withPreview<HomepageProps>(renderHomepage, query);
+  const render = withPreview(renderHomepage, query);
   return render && (render(data) as JSX.Element);
 };
 
