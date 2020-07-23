@@ -1,7 +1,7 @@
 import React, { FC, ReactNode } from 'react';
 // @ts-ignore
 import { RichText } from 'prismic-reactjs';
-import { graphql, Link, useStaticQuery } from 'gatsby';
+import { graphql, Link, StaticQuery } from 'gatsby';
 import { linkResolver } from '../prismic/linkResolver';
 import Layout from '../components/layout';
 import Image from '../components/image';
@@ -93,9 +93,8 @@ const renderHomepage = (props: HomepageProps) => {
 };
 
 const Homepage: FC = () => {
-  const data = useStaticQuery(query);
   const render = withPreview(renderHomepage, query);
-  return render && render(data);
+  return <StaticQuery query={`${query}`} render={render as (data: any) => ReactNode} />;
 };
 
 export default Homepage;
