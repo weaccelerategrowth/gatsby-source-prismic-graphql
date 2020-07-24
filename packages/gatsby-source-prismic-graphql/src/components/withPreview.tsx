@@ -1,7 +1,11 @@
 import React from 'react';
 import { WrapPage } from './WrapPage';
 
-export const withPreview = (render: Function, query: any, fragments: any = []) => {
+export const withPreview = <Data extends any = any>(
+  render: (data: Data) => JSX.Element,
+  query: any,
+  fragments: any = []
+): ((data: Data) => JSX.Element) | null => {
   if (typeof window === 'undefined') {
     return render;
   }
