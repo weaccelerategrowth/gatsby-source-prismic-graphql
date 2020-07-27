@@ -93,8 +93,8 @@ const renderHomepage = (props: HomepageProps) => {
 };
 
 const Homepage: FC = () => {
-  const render = withPreview(renderHomepage, query);
-  return <StaticQuery query={`${query}`} render={render as (data: any) => ReactNode} />;
+  const render = withPreview<HomepageProps>(renderHomepage, query);
+  return <StaticQuery query={`${query}`} render={render} />;
 };
 
 export default Homepage;
