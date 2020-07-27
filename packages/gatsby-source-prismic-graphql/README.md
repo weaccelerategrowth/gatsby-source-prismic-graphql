@@ -36,13 +36,13 @@ Please **be sure your Prismic repository has the GraphQL API enabled**. It is en
 **Install the plugin**
 
 ```bash
-npm install --save gatsby-source-prismic-graphql
+npm install --save @prismicio/gatsby-source-prismic-graphql
 ```
 
 or
 
 ```bash
-yarn add gatsby-source-prismic-graphql
+yarn add @prismicio/gatsby-source-prismic-graphql
 ```
 
 **Add plugin to `gatsby-config.js` and configure**
@@ -214,7 +214,7 @@ If we had not specified a `defaultLang`, the slug for US English would have been
 
 For Noticias, however, we only want to generate pages for Spanish documents of that type (`langs` is `[es-es]`). We decide that in this context, no locale tag is needed in the URL slug; "noticias" is already enough indication that the contents are in Spanish. So we omit the `:lang` match entirely and specify only `match: '/noticias/:uid'`.
 
-This is an example of how these three properties can be used together to offer maximum flexibility. To see this in action, check out the [languages example app](https://github.com/birkir/gatsby-source-prismic-graphql/tree/master/examples/languages).
+This is an example of how these three properties can be used together to offer maximum flexibility. To see this in action, check out the [languages example app](https://github.com/prismicio/gatsby-source-prismic-graphql/tree/master/examples/languages).
 
 #### (Optional) Short language codes
 
@@ -291,7 +291,7 @@ export const Articles = () => (
 
 Fragments are supported for both page queries and static queries.
 
-[See the example](https://github.com/birkir/gatsby-source-prismic-graphql/tree/master/examples/fragments)
+[See the example](https://github.com/prismicio/gatsby-source-prismic-graphql/tree/master/examples/fragments)
 
 **Within page components**:
 
@@ -337,7 +337,7 @@ export default () => (
 
 ### Dynamic Queries and Fetching
 
-You can use this plugin to dynamically fetch data for your component using `prismic.load`. Refer to the [pagination example](https://github.com/birkir/gatsby-source-prismic-graphql/tree/master/examples/pagination) to see it in action.
+You can use this plugin to dynamically fetch data for your component using `prismic.load`. Refer to the [pagination example](https://github.com/prismicio/gatsby-source-prismic-graphql/tree/master/examples/pagination) to see it in action.
 
 ```jsx
 import React from 'react';
@@ -374,7 +374,7 @@ export default function Example({ data, prismic }) {
 
 ### Pagination
 
-Pagination can be accomplished statically (_i.e._, during initialy page generation) or dynamically (_i.e._, with JS in the browser). Examples of both can be found in the [pagination example](https://github.com/birkir/gatsby-source-prismic-graphql/tree/master/examples/pagination).
+Pagination can be accomplished statically (_i.e._, during initialy page generation) or dynamically (_i.e._, with JS in the browser). Examples of both can be found in the [pagination example](https://github.com/prismicio/gatsby-source-prismic-graphql/tree/master/examples/pagination).
 
 Prismic pagination is cursor-based. See Prismic's [Paginate your results](https://prismic.io/docs/graphql/query-the-api/paginate-your-results) article to learn about cursor-based pagination.
 
@@ -382,7 +382,7 @@ By default, pagination will be sorted by last publication date. If you would lik
 
 #### Dynamically-Generated Pagination
 
-When coupled with `prismic.load`, as demonstrated in the [index page of the pagination example](https://github.com/birkir/gatsby-source-prismic-graphql/tree/master/examples/pagination), other pages can be fetched dynamically using page and cursor calculations.
+When coupled with `prismic.load`, as demonstrated in the [index page of the pagination example](https://github.com/prismicio/gatsby-source-prismic-graphql/tree/master/examples/pagination), other pages can be fetched dynamically using page and cursor calculations.
 
 GraphQL documents from Prismic have a cursor--a base64-encoded string that represents their order, or page number, in the set of all documents queried. We provide two helpers for converting between cursor strings and page numbers:
 
@@ -393,11 +393,11 @@ GraphQL documents from Prismic have a cursor--a base64-encoded string that repre
 
 ##### Basic Pagination
 
-For basic linking between the pages, metadata for the previous and next pages are provided to you automatically via `pageContext` in the `paginationPreviousMeta` and `paginationNextMeta` properties. These can be used in conjunction with your `linkResolver` to generate links between pages without any additional GraphQL query. For an example of this, take a look at the `<Pagination />` component in the pagination example's [`article.js`](https://github.com/birkir/gatsby-source-prismic-graphql/tree/master/examples/pagination/src/templates/article.js).
+For basic linking between the pages, metadata for the previous and next pages are provided to you automatically via `pageContext` in the `paginationPreviousMeta` and `paginationNextMeta` properties. These can be used in conjunction with your `linkResolver` to generate links between pages without any additional GraphQL query. For an example of this, take a look at the `<Pagination />` component in the pagination example's [`article.js`](https://github.com/prismicio/gatsby-source-prismic-graphql/tree/master/examples/pagination/src/templates/article.js).
 
 ##### Enhanced Pagination
 
-If you would like to gather other information about previous and next pages (say a title or image), simply modify your page query to retrieve those documents. This also is demonstrated in the same [pagination example](https://github.com/birkir/gatsby-source-prismic-graphql/tree/master/examples/pagination/src/templates/article.js) with the `<EnhancedPagination />` component and the page's GraphQL query.
+If you would like to gather other information about previous and next pages (say a title or image), simply modify your page query to retrieve those documents. This also is demonstrated in the same [pagination example](https://github.com/prismicio/gatsby-source-prismic-graphql/tree/master/examples/pagination/src/templates/article.js) with the `<EnhancedPagination />` component and the page's GraphQL query.
 
 ### Working with gatsby-image
 
