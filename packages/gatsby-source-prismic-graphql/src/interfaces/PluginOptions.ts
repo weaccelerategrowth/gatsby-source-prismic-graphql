@@ -6,6 +6,7 @@ export interface Page {
   langs?: string[];
   sortBy?: string;
   filter?: Function;
+  customPath?: <NodeType = any>(node: NodeType) => string;
 }
 
 export interface PluginOptions {

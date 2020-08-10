@@ -9,7 +9,7 @@
   },
   "scripts": {
     "clean": "yarn workspaces run clean",
-    "build": "yarn worksapces run build",
+    "build": "yarn workspaces run build",
     "prettier": "prettier --write '**/*.{json,md,js,jsx,ts,tsx}'",
     "test": "yarn clean && yarn workspaces run test",
     "test:prettier": "prettier --list-different '**/*.{json,md,js,jsx,ts,tsx}'"
