@@ -14,12 +14,12 @@ context('Custom path - we can create pages at a custom foo bar path', () => {
   });
 
   it('check first post', () => {
-    cy.visit('/foo/bar/published');
+    cy.visit('/Published%20blogpost/published');
     cy.get('main').contains('Published blogpost');
   });
 
   it('check second post', () => {
-    cy.visit('/foo/bar/published2');
+    cy.visit('/published2/published2');
     cy.get('main').contains('published2');
   });
 });

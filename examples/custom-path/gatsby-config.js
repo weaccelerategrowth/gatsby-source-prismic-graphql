@@ -12,7 +12,10 @@ module.exports = {
         pages: [
           {
             type: 'Blogpos',
-            customPath: node => `/foo/bar/${node._meta.uid}`,
+            customPath: node => {
+              return `/${node.title[0].text}/${node._meta.uid}`;
+            },
+            extraPageFields: 'title',
             path: '/blogpost',
             component: require.resolve('./src/components/blogpost.js'),
           },

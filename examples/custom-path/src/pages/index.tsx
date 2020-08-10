@@ -48,6 +48,7 @@ interface HomepageProps {
         node: {
           _meta: {
             id: string;
+            uid: string;
           };
           title: any;
         };
@@ -77,7 +78,7 @@ const renderHomepage = (props: HomepageProps) => {
         <Image />
         <ul>
           {allBlogposs.edges.map(({ node }) => {
-            const page = linkResolver(node._meta);
+            const page = `/${node.title[0].text}/${node._meta.uid}`;
             const id = node._meta.id;
             const title = RichText.asText(node.title);
             return (

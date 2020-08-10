@@ -176,7 +176,7 @@ const getDocumentsQuery = ({
 }: {
   documentType: string;
   sortType: string;
-  extraPageFields: string;
+  extraPageFields: string | string[];
 }): string => `
   query AllPagesQuery ($after: String, $lang: String, $sortBy: ${sortType}) {
     prismic {
@@ -194,7 +194,7 @@ const getDocumentsQuery = ({
         edges {
           cursor
           node {
-            ${extraPageFields}
+            ${typeof extraPageFields === 'string' ? extraPageFields : extraPageFields.join(`\n`)}
             _meta {
               id
               lang
@@ -236,7 +236,7 @@ exports.createPages = async ({ graphql, actions: { createPage } }: any, options:
     // Prepare and execute query
     const documentType: string = `all${pageTypeFormatted}s`;
     const sortType: string = `PRISMIC_Sort${pageTypeFormatted}y`;
-    const extraPageFields = options.extraPageFields || '';
+    const extraPageFields = page.extraPageFields || options.extraPageFields || '';
     const query: string = getDocumentsQuery({ documentType, sortType, extraPageFields });
     const { data, errors } = await graphql(query, {
       after: endCursor,

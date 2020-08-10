@@ -7,6 +7,7 @@ export interface Page {
   sortBy?: string;
   filter?: Function;
   customPath?: <NodeType = any>(node: NodeType) => string;
+  extraPageFields: string | string[];
 }
 
 export interface PluginOptions {
@@ -23,5 +24,5 @@ export interface PluginOptions {
   pages?: Page[];
   omitPrismicScript?: boolean;
   sharpKeys: RegExp[] | string[];
-  extraPageFields: string;
+  extraPageFields: string | string[];
 }
