@@ -142,6 +142,7 @@ function createDocumentPages(
     const nextNode = edges[index + 1] && edges[index + 1].node;
     const path = createDocumentPath(page, node, options);
     paths.push(path);
+    const { _meta, ...extraPageFields } = node;
 
     // ...and create the page
     createPage({
@@ -149,7 +150,8 @@ function createDocumentPages(
       component: page.component,
       context: {
         rootQuery: getRootQuery(page.component),
-        ...node._meta,
+        ...extraPageFields,
+        ..._meta,
         cursor,
         paginationPreviousMeta: previousNode ? previousNode._meta : null,
         paginationPreviousUid: previousNode ? previousNode._meta.uid : '',
