@@ -110,6 +110,9 @@ function createDocumentPath(
   node: any,
   { defaultLang, shortenUrlLangs }: PluginOptions
 ): string {
+  if (pageOptions.customPath) {
+    return pageOptions.customPath(node);
+  }
   const pathKeys: Key[] = [];
   const pathTemplate: string = pageOptions.match;
   pathToRegexp(pathTemplate, pathKeys);
@@ -175,7 +178,7 @@ const getDocumentsQuery = ({
 }: {
   documentType: string;
   sortType: string;
-  extraPageFields: string;
+  extraPageFields: string | string[];
 }): string => `
   query AllPagesQuery ($after: String, $lang: String, $sortBy: ${sortType}) {
     prismic {
@@ -193,7 +196,7 @@ const getDocumentsQuery = ({
         edges {
           cursor
           node {
-            ${extraPageFields}
+            ${typeof extraPageFields === 'string' ? extraPageFields : extraPageFields.join(`\n`)}
             _meta {
               id
               lang
@@ -226,12 +229,16 @@ exports.createPages = async ({ graphql, actions: { createPage } }: any, options:
     documents: Edge[] = []
   ): Promise<Edge[]> {
     // Format page.type so that the graphql query doesn't complain.
-    const pageTypeUnderscored = page.type.toLowerCase().split(' ').join('_');
-    const pageTypeFormatted = pageTypeUnderscored.charAt(0).toUpperCase() + pageTypeUnderscored.slice(1);
+    const pageTypeUnderscored = page.type
+      .toLowerCase()
+      .split(' ')
+      .join('_');
+    const pageTypeFormatted =
+      pageTypeUnderscored.charAt(0).toUpperCase() + pageTypeUnderscored.slice(1);
     // Prepare and execute query
     const documentType: string = `all${pageTypeFormatted}s`;
     const sortType: string = `PRISMIC_Sort${pageTypeFormatted}y`;
-    const extraPageFields = options.extraPageFields || '';
+    const extraPageFields = page.extraPageFields || options.extraPageFields || '';
     const query: string = getDocumentsQuery({ documentType, sortType, extraPageFields });
     const { data, errors } = await graphql(query, {
       after: endCursor,
@@ -262,7 +269,7 @@ exports.createPages = async ({ graphql, actions: { createPage } }: any, options:
 
   async function createPagesForType(page: Page, lang?: string): Promise<string[]> {
     const edges = await getPrismicEdges(page, lang);
-    if(options.previews) {
+    if (options.previews) {
       createDocumentPreviewPage(createPage, options, page);
     }
     return createDocumentPages(createPage, edges, options, page);
@@ -283,8 +290,8 @@ exports.createPages = async ({ graphql, actions: { createPage } }: any, options:
 
   // Run all pageCreators simultaneously
   const allPaths = flatten(await Promise.all(pageCreators));
-  
-  if(options.previews) {
+
+  if (options.previews) {
     createGeneralPreviewPage(createPage, allPaths, options);
   }
 };

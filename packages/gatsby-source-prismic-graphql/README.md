@@ -170,6 +170,46 @@ Given 2 articles with the `music_genre` field set, we'll get the following slugs
 /techno/darude
 /acoustic/mik-parsons
 
+#### Using extra page fields on individual pages
+
+`extraPageFields` can be used for individual page configurations if necessary:
+
+```js
+{
+  options: {
+    repositoryName: 'gatsby-demo-site',
+    pages: [{
+      type: 'Blogpos',
+      extraPageFields: 'title',
+      path: '/blogpost',
+      component: require.resolve('./src/components/blogpost.js'),
+    }]
+  }
+}
+```
+
+#### Generating a custom path with the `customPath` property.
+
+If you need a more complex path, you can pass a function in the `customPath` option:
+
+```js
+{
+  options: {
+    repositoryName: 'gatsby-demo-site',
+    pages: [{
+      type: 'Blogpos',
+      match: '/blogpost/:uid',
+      path: '/blogpost',
+      customPath: node => {
+        return `/${node.title[0].text}/${node._meta.uid}`;
+      },
+      extraPageFields: 'title',
+      component: require.resolve('./src/components/blogpost.js'),
+    }]
+  }
+}
+```
+
 ### Support for Multiple Languages
 
 Prismic allows you to create your content in multiple languages. This library supports that too. When setting up your configuration options in `gatsby-config.js`, there are three _optional_ properties you should be aware of: `options.defaultLang`, `options.langs`, and `options.pages[i].langs`. In the following example, all are in use:
