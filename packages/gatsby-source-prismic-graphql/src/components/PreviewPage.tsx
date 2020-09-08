@@ -34,7 +34,7 @@ export default class PreviewPage extends React.Component<any> {
     const api = await Prismic.getApi(`https://${this.config.repositoryName}.cdn.prismic.io/api/v2`);
 
     if (token) {
-      await api.previewSession(token, linkResolver, '/');
+      await api.getPreviewResolver(token, documentId).resolve(linkResolver, '/');
       document.cookie = `${Prismic.previewCookie}=${token}; expires=${now.toUTCString()}; path=/`;
 
       if (!documentId) {
