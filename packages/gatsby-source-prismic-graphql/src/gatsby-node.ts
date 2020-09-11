@@ -1,5 +1,6 @@
 import path from 'path';
 import querystring from 'querystring';
+import { SourceNodesArgs, NodeInput } from 'gatsby';
 import { getRootQuery } from '@prismicio/gatsby-source-graphql-universal/getRootQuery';
 import {
   onCreateWebpackConfig,
@@ -43,7 +44,7 @@ exports.onCreatePage = ({ page, actions }: any) => {
   }
 };
 
-exports.sourceNodes = (ref: any, options: PluginOptions) => {
+exports.sourceNodes = (ref: SourceNodesArgs, options: PluginOptions) => {
   const opts = {
     fieldName,
     typeName,
@@ -57,7 +58,20 @@ exports.sourceNodes = (ref: any, options: PluginOptions) => {
     ...options,
   };
 
-  return sourceNodes(ref, opts);
+  return sourceNodes(
+    {
+      ...ref,
+      actions: {
+        ...ref.actions,
+        createNode: (node: NodeInput, opts = {}) =>
+          ref.actions.createNode(node, {
+            ...opts,
+            name: '@prismic/gatsby-source-prismic-graphql',
+          }),
+      },
+    },
+    opts
+  );
 };
 
 function createGeneralPreviewPage(
