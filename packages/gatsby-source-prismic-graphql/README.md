@@ -6,6 +6,11 @@ For more context, be sure to checkout Prismic's getting started guide: [Using Pr
 
 Please **be sure your Prismic repository has the GraphQL API enabled**. It is enabled by default on all new Prismic repositories. If you have an older repository or are unable to access `https://[your_repo].prismic.io/graphql`, please reach out to Prismic support to request the GraphQL API.
 
+# Compatibility 
+This plugin modifies an internal bable gatsby plugin so that grapqhl queries and re-run bruing run time for previews.
+Meaning that that this plugin only work with certain version of gatsby.
+At the time of writing this version was 2.24.11. [see the dependencies](https://github.com/prismicio/gatsby-source-prismic-graphql/blob/master/packages/gatsby-source-prismic-graphql/package.json) to confirm the current version.
+
 ## Contents
 
 - [Differences From gatsby-source-prismic](#differences-from-gatsby-source-prismic)
