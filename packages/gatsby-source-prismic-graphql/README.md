@@ -2,7 +2,7 @@
 >
 > **⚠️ `gatsby-source-prismic-graphql` has been replaced by [`gatsby-source-prismic`](https://github.com/prismicio/prismic-gatsby)**
 > 
-> You’re safe to stay on `gatsby-source-prismic-graphql`, but it will no longer receive updates nor fixes. A full [migration guide](https://prismic.io/docs/technologies/migrate-to-gatsby-source-prismic-gatsby) is available to walk you through upgrading your project. If you have any questions, please reach to us on our [community forum](https://community.prismic.io/).
+> You’re safe to stay on `gatsby-source-prismic-graphql`, but it will no longer receive updates nor fixes. A full [migration guide](https://prismic.io/docs/technologies/migrate-to-gatsby-source-prismic-gatsby) is available to walk you through upgrading your project. If you have any questions, please reach out to us on our [community forum](https://community.prismic.io/).
 > 
 > Thank you for understanding!
 
