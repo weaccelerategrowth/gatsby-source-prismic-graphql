@@ -33,7 +33,7 @@
   },
   "types": "./types/index.d.ts",
   "dependencies": {
-    "@prismicio/gatsby-source-graphql-universal": "^3.4.14",
+    "@prismicio/gatsby-source-graphql-universal": "https://github.com/weaccelerategrowth/gatsby-source-graphql-universal",
     "apollo-boost": "^0.3.1",
     "apollo-link-context": "^1.0.17",
     "gatsby": "^2.24.11",
